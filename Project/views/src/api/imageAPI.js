@@ -9,6 +9,11 @@ const imageAPI = {
     const API_URL = `/api/manage/photos/id=${id}`;
     return axiosClient.get(API_URL);
   },
+
+  deleteImage(id) {
+    const API_URL = `/api/manage/photos/delete=${id}`;
+    return axiosClient.delete(API_URL);
+  },
 };
 
 export default imageAPI;

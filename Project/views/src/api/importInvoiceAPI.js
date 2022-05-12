@@ -17,6 +17,16 @@ const importInvoiceAPI = {
     const API_URL = `/api/manage/importInvoice/delete/id=${id}`;
     return axiosClient.delete(API_URL);
   },
+
+  sumPriceInvoice(idhdn) {
+    const API_URL = `/api/manage/importInvoice/sum_price/idhdn=${idhdn}`;
+    return axiosClient.get(API_URL);
+  },
+
+  sumPriceInvoices() {
+    const API_URL = "/api/manage/importInvoice/sum_price";
+    return axiosClient.get(API_URL);
+  },
 };
 
 export default importInvoiceAPI;

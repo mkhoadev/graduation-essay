@@ -1,18 +1,10 @@
 import React, {useState, useEffect} from "react";
 import {DataGrid} from "@mui/x-data-grid";
-import productAPI from "../../../../api/productAPI";
 import moment from "moment";
 import {useSnackbar} from "notistack";
-import {Backdrop, Button, Fade, Modal, Typography} from "@mui/material";
-import {product} from "../../../../redux/productSlice";
-import {unwrapResult} from "@reduxjs/toolkit";
-import {useDispatch, useSelector} from "react-redux";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {Backdrop, Fade, Modal, Typography} from "@mui/material";
 
 import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
@@ -23,7 +15,13 @@ import sizeAPI from "../../../../api/sizeAPI";
 import brandAPI from "../../../../api/brandAPI";
 import typeProductAPI from "../../../../api/typeProductAPI";
 import imageAPI from "../../../../api/imageAPI";
+import productAPI from "../../../../api/productAPI";
+import discountAPI from "../../../../api/discountAPI";
+import detailProductAPI from "../../../../api/detailProductAPI";
+
 import {useNavigate} from "react-router-dom";
+import {useForm} from "react-hook-form";
+import detailImportInvoiceAPI from "../../../../api/detailImportInvoiceAPI";
 
 const style = {
   position: "absolute",
@@ -35,28 +33,74 @@ const style = {
   p: 2,
 };
 
+const defaultValues = {
+  priceDiscount: "",
+  startDate: "",
+  endDate: "",
+};
+
+const schema = yup.object().shape({
+  priceDiscount: yup.string().required("Vui lòng nhập giá khuyễn mãi"),
+});
+
 function ListProducts() {
-  const [open, setOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState,
+    formState: {errors},
+    reset,
+  } = useForm({resolver: yupResolver(schema), defaultValues: defaultValues});
+
+  const [IdPD, setIdPD] = useState("");
+
+  const [openInfor, setOpenInfor] = useState(false);
+  const [openDiscount, setOpenDiscount] = useState(false);
+  const [openAddProduct, setOpenAddProduct] = useState(false);
+
   const [dataDetailProduct, setDataDetailProduct] = useState("");
   const [dataBrand, setDataBrand] = useState("");
   const [dataColor, setDataColor] = useState("");
   const [dataSize, setDataSize] = useState("");
   const [dataImage, setDataImage] = useState("");
   const [dataTypeProduct, setDataTypeProduct] = useState("");
+  const [infoProducts, setInfoProducts] = useState([]);
   const [count, setCount] = useState(0);
-  const {enqueueSnackbar} = useSnackbar();
-  const dispatch = useDispatch();
-  const dataProduct = useSelector((state) => state?.product?.productlist);
+  const [discount, setDiscount] = useState([]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [datadetail, setDatadetail] = useState([]);
+  const [color, setColor] = useState([]);
+  const [size, setSize] = useState([]);
+
+  const [idProduct, setIdProduct] = useState("");
+  const [idColor, setIdColor] = useState("");
+  const [idSize, setIdSize] = useState("");
+  const [idImportInvoice, setIdImportInvoice] = useState("");
+  const [number, setNumber] = useState("");
+
+  const {enqueueSnackbar} = useSnackbar();
+
+  const [dataProduct, setDataProduct] = useState([]);
+
+  const handleOpenInfor = () => setOpenInfor(true);
+  const handleCloseInfor = () => setOpenInfor(false);
+
+  const handleOpenDiscount = () => setOpenDiscount(true);
+  const handleCloseDiscount = () => setOpenDiscount(false);
+
+  const handleOpenAddProduct = () => setOpenAddProduct(true);
+  const handleCloseAddProduct = () => setOpenAddProduct(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       try {
-        unwrapResult(dispatch(await product()));
+        const res = await productAPI.getProductList();
+        setDataProduct(res);
+        if (formState.isSubmitSuccessful) {
+          reset(defaultValues);
+        }
       } catch (error) {
         enqueueSnackbar(error.message, {
           variant: "error",
@@ -84,56 +128,211 @@ function ListProducts() {
   };
 
   const detailProduct = async (idsp) => {
+    const result = await detailProductAPI.getList(idsp);
     const resProduct = await productAPI.getProduct(idsp);
     const resColor = await colorAPI.getColor(resProduct[0].id_ms);
     const resTypeProduct = await typeProductAPI.getTypeProduct(resProduct[0].id_lsp);
     const resBrand = await brandAPI.getBrand(resProduct[0].id_th);
     const resSize = await sizeAPI.getSize(resProduct[0].id_kt);
     const resImage = await imageAPI.getImage(resProduct[0].id_sp);
+    const resDiscount = await discountAPI.getDiscount(idsp);
+    setInfoProducts(result);
+    setDiscount(resDiscount);
     setDataImage(resImage);
     setDataTypeProduct(resTypeProduct);
     setDataBrand(resBrand);
     setDataSize(resSize);
     setDataColor(resColor);
     setDataDetailProduct(resProduct);
-    handleOpen();
+    handleOpenInfor();
   };
 
   const editProduct = (id) => {
-    console.log(id);
     navigate(`/manage/product/edit/${id}`, {replace: true});
   };
 
+  const handleColor = async (idms) => {
+    const result = await detailProductAPI.getListColor(idProduct, idms);
+    setSize(result);
+    setIdColor(idms);
+  };
+
+  const handleSize = async (idkt) => {
+    setIdSize(idkt);
+  };
+
+  const addProduct = async (id_sp, id_hdn) => {
+    handleOpenAddProduct();
+    const detail_product = await detailProductAPI.getList(id_sp);
+    const result = await colorAPI.getColor(id_sp);
+    setColor(result);
+    setIdProduct(id_sp);
+    setIdImportInvoice(id_hdn);
+    setDatadetail(detail_product);
+  };
+
+  const handleSubmitAdd = async () => {
+    if (number && color && size) {
+      await detailProductAPI.addNumberProduct({
+        so_luong: number,
+        id_sp: idProduct,
+        id_kt: idSize,
+        id_ms: idColor,
+      });
+      await detailImportInvoiceAPI.addNumberProduct({
+        id_hdn: idImportInvoice,
+        so_luong: number,
+      });
+      setCount((e) => e + 1);
+      handleCloseAddProduct();
+      enqueueSnackbar("Thêm số lượng sản phẩm thành công", {
+        variant: "success",
+        autoHideDuration: 2000,
+      });
+    } else {
+      enqueueSnackbar("Vui lòng nhập đầy đủ thông tin", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const addDiscount = async (id) => {
+    try {
+      handleOpenDiscount();
+      const resDiscount = await discountAPI.getDiscount(id);
+      setDiscount(resDiscount);
+      setIdPD(id);
+    } catch (error) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const deleteDiscount = async (id) => {
+    try {
+      await discountAPI.deleteDiscount(id);
+      handleCloseDiscount();
+    } catch (error) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   const columns = [
-    {field: "id_sp", headerName: "ID", width: 100},
-    {field: "ten_sp", headerName: "Tên Sản Phẩm", width: 200},
-    {field: "gia_nhap", headerName: "Giá Mua", width: 120},
-    {field: "gia_ban", headerName: "Giá Bán", width: 120},
-    {field: "so_luong_nhap", headerName: "Số Lượng", width: 100},
-    {field: "ngay_nhap", headerName: "Ngày Nhập", width: 150},
-    {field: "khuyen_mai", headerName: "Khuyễn Mãi", width: 120},
+    {field: "id_sp", headerName: "ID", width: 80, headerAlign: "center", align: "center"},
+    {field: "ten_sp", headerName: "Tên Sản Phẩm", headerAlign: "center", width: 300},
+    {field: "gia_ban", headerName: "Giá Bán", width: 120, headerAlign: "center", align: "center"},
     {
       field: "hanh_dong",
       headerName: "Hành Động",
-      width: 300,
+      headerAlign: "center",
+      width: 400,
       renderCell: (params) => (
         <div className="flex justify-between w-full">
-          <div onClick={() => deleteProduct(params.row.id_sp, params.row.id_hdn)}>
-            <Button variant="contained" color="error">
-              Delete
-            </Button>
+          <div>
+            <button
+              onClick={() => detailProduct(params.row.id_sp)}
+              className="py-2 px-4 text-white font-bold bg-[#00CED1] rounded-lg shadow-lg"
+            >
+              Xem
+            </button>
           </div>
 
-          <div onClick={() => detailProduct(params.row.id_sp)}>
-            <Button variant="contained" color="primary">
-              Detail
-            </Button>
+          <div>
+            <button
+              onClick={() => addProduct(params.row.id_sp, params.row.id_hdn)}
+              className="py-2 px-4 text-white font-bold bg-[#630e9f] rounded-lg shadow-lg"
+            >
+              Thêm
+            </button>
+            <Modal
+              open={openAddProduct}
+              onClose={handleCloseAddProduct}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <p className="text-[20px] text-center">Thêm sản phẩm</p>
+                <div className="flex gap-5 mt-4">
+                  <div className="w-[33%]">
+                    <select
+                      className="w-full px-4 py-2 border border-slate-900 rounded-md"
+                      onChange={(e) => handleColor(e.target.value)}
+                    >
+                      <option value="">Màu sắc</option>
+                      {color?.map(({id_ms, ten_ms}, idx) => (
+                        <option key={idx} value={id_ms}>
+                          {ten_ms}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="w-[33%]">
+                    <select
+                      className="w-full px-4 py-2 border border-slate-900 rounded-md"
+                      onChange={(e) => handleSize(e.target.value)}
+                    >
+                      <option value="">Kích thước</option>
+                      {size?.map(({id_kt, ten_kt}, idx) => (
+                        <option key={idx} value={id_kt}>
+                          {ten_kt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="w-[33%]">
+                    <input
+                      onChange={(e) => setNumber(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-900 rounded-md"
+                      type="text"
+                      placeholder="Số lượng"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <button
+                    onClick={() => handleSubmitAdd()}
+                    className="block ml-auto mr-0 text-white px-4 py-2 bg-teal-500 rounded-lg shadow-md"
+                  >
+                    Thêm
+                  </button>
+                </div>
+              </Box>
+            </Modal>
           </div>
 
-          <div onClick={() => editProduct(params.row.id_sp)}>
-            <Button variant="contained" color="secondary">
-              Edit
-            </Button>
+          <div>
+            <button
+              onClick={() => editProduct(params.row.id_sp)}
+              className="py-2 px-4 text-white font-bold bg-[#008000] rounded-lg shadow-lg"
+            >
+              Sửa
+            </button>
+          </div>
+
+          <div>
+            <button
+              onClick={() => deleteProduct(params.row.id_sp, params.row.id_hdn)}
+              className="py-2 px-4 text-white font-bold bg-[#FF0000] rounded-lg shadow-lg"
+            >
+              Xóa
+            </button>
+          </div>
+
+          <div>
+            <button
+              onClick={() => addDiscount(params.row.id_sp)}
+              className="py-2 px-4 text-white font-bold bg-[#FF4500] rounded-lg shadow-lg"
+            >
+              Khuyễn mãi
+            </button>
           </div>
         </div>
       ),
@@ -141,20 +340,19 @@ function ListProducts() {
   ];
 
   const rows = dataProduct?.map(
-    ({id_sp, id_hdn, id_th, id_ms, id_kt, id_lsp, ten_sp, gia_nhap, gia_ban, so_luong_nhap, ngay_lap_hdx}, idx) => ({
+    (
+      {id_sp, id_hdn, id_th, id_ms, id_kt, id_lsp, ten_sp, gia_nhap_sp, gia_ban_sp, so_luong_hdn, ngay_lap_hdx},
+      idx,
+    ) => ({
       id: idx,
       id_sp: id_sp,
-      id_hdn: id_hdn,
       id_th: id_th,
       id_ms: id_ms,
       id_kt: id_kt,
       id_lsp: id_lsp,
       ten_sp: ten_sp,
-      gia_nhap: gia_nhap,
-      gia_ban: gia_ban,
-      so_luong_nhap: so_luong_nhap,
+      gia_ban: `${new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(gia_ban_sp)}`,
       ngay_nhap: moment(ngay_lap_hdx).format("DD-MM-YYYY"),
-      khuyen_mai: "",
     }),
   );
 
@@ -170,6 +368,25 @@ function ListProducts() {
       </div>
     ));
 
+  const dataDiscount = (data) => {
+    return {
+      giakm: data.priceDiscount,
+      idsp: IdPD,
+    };
+  };
+
+  const setData = async (data) => {
+    try {
+      await discountAPI.createDiscount(dataDiscount(data));
+      handleCloseDiscount();
+    } catch (error) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   return (
     <div>
       <div className="px-[20px]">
@@ -184,15 +401,15 @@ function ListProducts() {
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
-            open={open}
-            onClose={handleClose}
+            open={openInfor}
+            onClose={handleCloseInfor}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
-              timeout: 500,
+              timeout: 300,
             }}
           >
-            <Fade in={open}>
+            <Fade in={openInfor}>
               <Box sx={{...style, borderRadius: "16px"}}>
                 <Typography id="transition-modal-title" variant="h6" component="h2">
                   {dataDetailProduct[0]?.id_sp} - {dataDetailProduct[0]?.ten_sp}
@@ -200,33 +417,33 @@ function ListProducts() {
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography id="transition-modal-description" sx={{mt: 1}}>
-                      Price Buy:{" "}
-                      {dataDetailProduct[0]?.gia_nhap.toLocaleString("it-IT", {
+                      Giá bán:{" "}
+                      {dataDetailProduct[0]?.gia_ban_sp.toLocaleString("it-IT", {
                         style: "currency",
                         currency: "VND",
                       })}
+                    </Typography>
+                    <Typography sx={{mt: 1}}>Loại sản phẩm: {dataTypeProduct[0]?.ten_lsp}</Typography>
+                    <Typography sx={{mt: 1}}>
+                      Kích thước:{" "}
+                      {infoProducts?.map(({ten_kt}, idx) => (
+                        <span key={idx}>{ten_kt},</span>
+                      ))}
                     </Typography>
                     <Typography sx={{mt: 1}}>
-                      Price Sell:{" "}
-                      {dataDetailProduct[0]?.gia_ban.toLocaleString("it-IT", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                      Màu sắc:{" "}
+                      {infoProducts?.map(({ten_ms}, idx) => (
+                        <span key={idx}>{ten_ms},</span>
+                      ))}
                     </Typography>
-                    <Typography sx={{mt: 1}}>Number: {dataDetailProduct[0]?.so_luong_nhap}</Typography>
-                    <Typography sx={{mt: 1}}>Weight : {dataDetailProduct[0]?.can_nang} (cm)</Typography>
-                    <Typography sx={{mt: 1}}>Width : {dataDetailProduct[0]?.chieu_rong} (cm)</Typography>
-                    <Typography sx={{mt: 1}}>Height : {dataDetailProduct[0]?.chieu_dai} (cm)</Typography>
+                    <Typography sx={{mt: 1}}>Thương hiệu: {dataBrand[0]?.ten_th}</Typography>
+                    <Typography sx={{mt: 1}}>Giảm giá: {discount[0]?.gia_km} %</Typography>
                   </Grid>
 
                   <Grid item xs={6}>
-                    <Typography id="transition-modal-description" sx={{mt: 1}}>
-                      Date: {moment(dataDetailProduct[0]?.ngay_lap_hdn).format("DD-MM-YYYY")}
+                    <Typography sx={{mt: 1}}>
+                      Thông tin sản phẩm: <br /> {dataDetailProduct[0]?.thong_tin_sp}
                     </Typography>
-                    <Typography sx={{mt: 1}}>Type Product: {dataTypeProduct[0]?.ten_lsp}</Typography>
-                    <Typography sx={{mt: 1}}>Size: {dataSize[0]?.ten_kt}</Typography>
-                    <Typography sx={{mt: 1}}>Color: {dataColor[0]?.ten_ms}</Typography>
-                    <Typography sx={{mt: 1}}>Brand: {dataBrand[0]?.ten_th}</Typography>
                   </Grid>
                 </Grid>
                 <Box
@@ -244,6 +461,77 @@ function ListProducts() {
           </Modal>
         </>
       )}
+
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openDiscount}
+        onClose={handleCloseDiscount}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 300,
+        }}
+      >
+        <Fade in={openDiscount}>
+          <Box sx={{...style, borderRadius: "16px"}}>
+            {discount?.length === 0 ? (
+              <form onSubmit={handleSubmit((data) => setData(data))}>
+                <div className="mt-5">
+                  <span>Giá khuyễn mãi (%)</span>
+                  <input
+                    className="mt-2 px-2 py-2 w-full border border-slate-400 rounded-lg"
+                    type="text"
+                    name="priceDiscount"
+                    {...register("priceDiscount")}
+                  />
+                  <p className="absolute text-[14px] text-red-600">{errors.priceDiscount?.message}</p>
+                </div>
+                <div className="flex justify-between">
+                  {/* <div className="mt-5">
+                    <span>Ngày bắt đầu</span>
+                    <input
+                      className="mt-2 px-2 py-2 w-full border border-slate-400 rounded-lg"
+                      type="date"
+                      name="startDate"
+                      {...register("startDate")}
+                    />
+                  </div>
+                  <div className="mt-5">
+                    <span>Ngày kết thúc</span>
+                    <input
+                      className="mt-2 px-2 py-2 w-full border border-slate-400 rounded-lg"
+                      type="date"
+                      name="endDate"
+                      {...register("endDate")}
+                    />
+                    <p className="absolute text-[14px] text-red-600">{errors.endDate?.message}</p>
+                  </div> */}
+                </div>
+                <div className="mt-8">
+                  <button className="float-right font-bold text-white py-2 px-4 bg-slate-500 rounded-lg">
+                    Xác nhận
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <div className="p-4">
+                  <h4 className="text-[20px]">
+                    Giá khuyễn mãi: <span>{discount[0]?.gia_km} %</span>
+                  </h4>
+                  <button
+                    onClick={() => deleteDiscount(discount[0]?.id_km)}
+                    className="bg-red-600 py-1 px-2 mt-2 rounded-lg text-white"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 }

@@ -6,9 +6,11 @@ module.exports = (app) => {
     next();
   });
 
-  app.post("/api/manage/color/add", color.createColor);
+  app.post("/api/color/add", color.createColor);
 
-  app.get("/api/manage/color/id=:id", color.getColor);
+  app.get("/api/color/id=:id", color.getColor);
 
-  app.get("/api/manage/color/list", color.getList);
+  app.get("/api/color/idms=:idms", color.getOneColor)
+
+  app.get("/api/color/list", color.getListColor);
 };

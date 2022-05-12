@@ -12,7 +12,9 @@ module.exports = (app) => {
 
   app.get("/api/manage/product/list", product.getListProducts);
 
-  app.put("/api/manage/product/update/:id", product.updateProduct)
+  app.get("/api/manage/product/product_list", product.getProductList)
 
-  app.delete("/api/manage/product/delete/id=:id", product.deleteProduct)
+  app.put("/api/manage/product/update/:id", product.updateProduct);
+
+  app.delete("/api/manage/product/delete/id=:id", product.deleteProduct);
 };

@@ -3,7 +3,6 @@ import {Controller} from "react-hook-form";
 import {ErrorMessage} from "@hookform/error-message";
 
 function FormLogin({control, errors}) {
-
   return (
     <section>
       <Controller
@@ -23,11 +22,7 @@ function FormLogin({control, errors}) {
       <ErrorMessage
         errors={errors}
         name="email"
-        render={({messages}) => (
-          <p className="absolute text-[14px] text-red-600">
-            Email is required {messages}
-          </p>
-        )}
+        render={({messages}) => <p className="absolute text-[14px] text-red-600">Email is required {messages}</p>}
       />
 
       <Controller
@@ -46,11 +41,7 @@ function FormLogin({control, errors}) {
       <ErrorMessage
         errors={errors}
         name="password"
-        render={() => (
-          <p className="absolute text-[14px] text-red-600">
-            Password is required
-          </p>
-        )}
+        render={() => <p className="absolute text-[14px] text-red-600">Password is required</p>}
       />
     </section>
   );

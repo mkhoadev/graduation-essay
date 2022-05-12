@@ -57,4 +57,28 @@ module.exports = {
       }
     });
   },
+
+  getOneUser: (req, res) => {
+    User.getOneUser(req.params.id_kh, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  },
+
+  changePassword: (req, res) => {
+    User.changePassword(req.params.email, req.body.password, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  },
 };

@@ -1,19 +1,35 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import sha256 from "js-sha256";
 import FormLogin from "../../components/FormLogin";
 import {unwrapResult} from "@reduxjs/toolkit";
 
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../../redux/userSlice";
+import {useSnackbar} from "notistack";
+import userAPI from "../../../api/userAPI";
 
 const defaultValues = {
   email: "",
   password: "",
 };
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  borderRadius: 2,
+  boxShadow: 24,
+  p: 4,
+};
+
 function Login() {
+  const {enqueueSnackbar} = useSnackbar();
+
   const {
     handleSubmit,
     formState: {errors},
@@ -32,10 +48,28 @@ function Login() {
 
   const setData = async (data) => {
     try {
-      unwrapResult(dispatch(await login(dataUser(data))));
-      navigate("/shop/products", {replace: true});
+      let arr = [];
+      const res = await userAPI.login(dataUser(data));
+      arr.push(res.datatUser[0]);
+      if (arr[0]?.id_kh) {
+        unwrapResult(dispatch(login(dataUser(data))));
+        navigate("/shop/products", {replace: true});
+        enqueueSnackbar("Đăng nhập thành công", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      } else {
+        enqueueSnackbar("Tài khoản hoặc mật khẩu không đúng", {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+     
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar(error.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
     }
   };
 
@@ -45,11 +79,8 @@ function Login() {
         <p className="text-[35px] font-bold text-center">LOGIN</p>
         <form onSubmit={handleSubmit((data) => setData(data))}>
           <FormLogin control={control} errors={errors} />
-
-          <Link to="/">
-            <p className="mt-6 text-[14px] text-cyan-500 text-right">
-              Forgot password ?
-            </p>
+          <Link to="/shop/forgot_password">
+            <p className="mt-6 text-[14px] text-cyan-500 text-right cursor-pointer">Forgot password ?</p>{" "}
           </Link>
           <button className="w-full opacity-80 text-white font-bold mt-8 py-2 bg-lime-600 rounded-xl hover:opacity-100 duration-300">
             Login

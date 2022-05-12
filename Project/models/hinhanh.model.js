@@ -29,4 +29,16 @@ Image.getImage = (id, result) => {
   });
 };
 
+Image.deleteImage = (id, result) => {
+  mysql.query(`DELETE FROM hinh_anh WHERE id_ha='${id}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("delete image");
+    result(null, res);
+  });
+};
+
 module.exports = Image;

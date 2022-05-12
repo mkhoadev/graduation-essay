@@ -1,24 +1,84 @@
+import {ErrorMessage} from "@hookform/error-message";
 import React from "react";
+import {Controller} from "react-hook-form";
 
-function FormProfile() {
+function FormProfile({control, errors}) {
   return (
-    <div className="w-[500px] p-4 bg-slate-200 rounded-lg">
-      <form>
-        <div className="flex gap-20">
-          <p>Name</p>
-          <input className="w-full py-1 px-2 rounded-lg" type="text" />
-        </div>
-        <div className="flex gap-20 mt-2">
-          <p>Phone</p>
-          <input className="w-full py-1 px-2 rounded-lg" type="text" />
-        </div>
-        <div className="flex gap-16 mt-2">
-          <p>Address</p>
-          <input className="w-full py-1 px-2 rounded-lg" type="text" />
-        </div>
-        <button className="mt-5 py-2 px-6 text-white bg-slate-500 rounded-lg">Submit</button>
-      </form>
-    </div>
+    <>
+      <Controller
+        control={control}
+        name="tenkh"
+        rules={{
+          required: true,
+        }}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Tên</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="sdtkh"
+        rules={{required: true}}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Số điện thoại</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="dckh"
+        rules={{required: true}}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Địa chỉ</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="dckh"
+        rules={{required: true}}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Địa chỉ</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="dckh"
+        rules={{required: true}}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Địa chỉ</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="dckh"
+        rules={{required: true}}
+        render={({field}) => (
+          <div className="flex mb-6">
+            <p className="w-[28%]">Địa chỉ</p>
+            <input {...field} className="w-full py-2 px-2 rounded-lg" type="text" />
+          </div>
+        )}
+      />
+    </>
   );
 }
 

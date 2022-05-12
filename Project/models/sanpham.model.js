@@ -1,15 +1,9 @@
 const mysql = require("./db");
 
 const Product = function (product) {
+  this.gia_ban_sp = product.giaban;
   this.ten_sp = product.tensanpham;
   this.thong_tin_sp = product.thongtinsanpham;
-  this.gia_ban = product.giaban;
-  this.can_nang = product.cannang;
-  this.chieu_cao = product.chieucao;
-  this.chieu_rong = product.chieurong;
-  this.chieu_dai = product.chieudai;
-  this.id_ms = product.mausac;
-  this.id_kt = product.kichthuoc;
   this.id_lsp = product.loaisanpham;
   this.id_th = product.thuonghieu;
 };
@@ -28,7 +22,7 @@ Product.createProduct = (newProduct, result) => {
 
 Product.getProduct = (id, result) => {
   mysql.query(
-    `SELECT * FROM san_pham INNER JOIN chi_tiet_hdn ON san_pham.id_sp = chi_tiet_hdn.id_sp INNER JOIN hoa_don_nhap ON hoa_don_nhap.id_hdn = chi_tiet_hdn.id_hdn WHERE san_pham.id_sp = '${id}' ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC `,
+    `SELECT san_pham.*, khuyen_mai.gia_km FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp WHERE san_pham.id_sp = '${id}' ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC`,
     (err, res) => {
       if (err) {
         console.log("ERROR: ", err);
@@ -43,7 +37,22 @@ Product.getProduct = (id, result) => {
 
 Product.getListProducts = (result) => {
   mysql.query(
-    "SELECT * FROM san_pham INNER JOIN chi_tiet_hdn ON san_pham.id_sp = chi_tiet_hdn.id_sp INNER JOIN hoa_don_nhap ON hoa_don_nhap.id_hdn = chi_tiet_hdn.id_hdn ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC",
+    "SELECT san_pham.*, chi_tiet_hdn.*, hoa_don_nhap.*, khuyen_mai.gia_km  FROM san_pham INNER JOIN chi_tiet_hdn ON san_pham.id_sp = chi_tiet_hdn.id_sp INNER JOIN hoa_don_nhap ON hoa_don_nhap.id_hdn = chi_tiet_hdn.id_hdn LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC",
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Get products");
+      result(null, res);
+    },
+  );
+};
+
+Product.getProductList = (result) => {
+  mysql.query(
+    "SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC",
     (err, res) => {
       if (err) {
         console.log("ERROR: ", err);
@@ -68,7 +77,7 @@ Product.getId = (result) => {
   });
 };
 
-Product.updateProduct = (id, product, result) => {
+Product.updateProduct = (idsp, product, result) => {
   mysql.query(
     "UPDATE san_pham SET ten_sp=?, thong_tin_sp=?, gia_ban=?, can_nang=?, chieu_rong=?, chieu_dai=?, chieu_cao=?, id_th=?, id_kt=?, id_lsp=?, id_ms=? WHERE id_sp=?",
     [
@@ -83,7 +92,7 @@ Product.updateProduct = (id, product, result) => {
       product.id_kt,
       product.id_lsp,
       product.id_ms,
-      id,
+      idsp,
     ],
     (err, res) => {
       if (err) {

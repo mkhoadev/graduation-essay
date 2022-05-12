@@ -1,42 +1,39 @@
-import moment from "moment";
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {useSnackbar} from "notistack";
+import {useSelector} from "react-redux";
+
 import productAPI from "../../../../api/productAPI";
-import importInvoiceAPI from "../../../../api/importInvoiceAPI";
-import detailImportInvoiceAPI from "../../../../api/detailImportInvoiceAPI";
 import imageAPI from "../../../../api/imageAPI";
+import detailProductAPI from "../../../../api/detailProductAPI";
 
 const defaultValues = {
-  cannang: "50",
-  chieucao: "50",
-  chieudai: "50",
-  chieurong: "50",
-  giaban: "1000000",
   kichthuoc: "KT05",
   loaisanpham: "LSP01",
-  mausac: "MS01",
   tensanpham: "Nike Shoes",
   thongtinsanpham: "ABC",
   thuonghieu: "TH01",
-  soluong: "50",
-  gianhap: "300000",
+  giaban: "1500000",
 };
 
 function AddProduct() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState,
-    formState: {errors, isSubmitSuccessful},
-    reset,
-  } = useForm({defaultValues: defaultValues});
+  const {register, handleSubmit, formState, reset} = useForm({defaultValues: defaultValues});
 
   const [imageUrl, setImageUrl] = useState([]);
   const [listImage, setListImage] = useState([]);
   const [submittedData, setSubmittedData] = useState({});
+  const [detailProduct, setDetailProduct] = useState([]);
+  const [addFormData, setAddFormData] = useState({
+    mausac: "",
+    kichthuoc: "",
+  });
+
   const {enqueueSnackbar} = useSnackbar();
+
+  const color = useSelector((state) => state?.color?.colorlist);
+  const size = useSelector((state) => state?.size?.sizelist);
+  const brand = useSelector((state) => state?.brand?.brandlist);
+  const typeProduct = useSelector((state) => state?.typeProduct?.typeProductlist);
 
   const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -64,7 +61,6 @@ function AddProduct() {
         setImageUrl((oldFile) => [...oldFile, {url: base64}]);
       }
     } else {
-      console.log("Image is max 5");
       enqueueSnackbar("Image is max 5", {
         variant: "error",
         autoHideDuration: 2000,
@@ -84,63 +80,40 @@ function AddProduct() {
 
   const dataProduct = (data) => {
     return {
-      cannang: data.cannang,
-      chieucao: data.chieucao,
-      chieudai: data.chieudai,
-      chieurong: data.chieurong,
-      giaban: data.giaban,
-      kichthuoc: data.kichthuoc,
-      loaisanpham: data.loaisanpham,
-      mausac: data.mausac,
       tensanpham: data.tensanpham,
-      thongtinsanpham: data.thongtinsanpham,
+      giaban: data.giaban,
+      loaisanpham: data.loaisanpham,
       thuonghieu: data.thuonghieu,
+      thongtinsanpham: data.thongtinsanpham,
     };
   };
-
-  const dataBill = () => {
-    return {
-      ngaylaphdn: moment().format("YYYY-MM-DD"),
-    };
-  };
-
-  // const dataImage = (data) => {
-  //   formData.append("photos", file);
-  //   formData.append("MaSP", data.masanpham);
-  //   return formData;
-  // };
 
   const setData = async (data) => {
     setSubmittedData(data);
     try {
       const idsp = await productAPI.createProduct(dataProduct(data));
-      const idhdn = await importInvoiceAPI.createImportInvoiceAPI(dataBill());
-      if (idsp && idhdn) {
-        await detailImportInvoiceAPI.createdetailImportInvoiceAPI({
-          soluong: data.soluong,
-          gianhap: data.gianhap,
-          idsp: idsp[0].id_sp,
-          idhdn: idhdn[0].id_hdn,
-        });
-        enqueueSnackbar("Thêm sản phẩm thành công", {
-          variant: "success",
-          autoHideDuration: 2000,
-        });
-        const formData = new FormData();
-        if (listImage) {
-          for (let i = 0; i < listImage.length; i++) {
-            formData.append("photos", listImage[i]);
-          }
 
-          formData.append("idsp", idsp[0]?.id_sp);
-          await imageAPI.createImage(formData);
+      if (detailProduct) {
+        for (let i = 0; i < detailProduct.length; i++) {
+          await detailProductAPI.createdetailProductAPI({
+            idsp: idsp[0].id_sp,
+            idkt: detailProduct[i]?.kichthuoc,
+            idms: detailProduct[i]?.mausac,
+          });
         }
       }
+
+      const formData = new FormData();
+      if (listImage) {
+        for (let i = 0; i < listImage.length; i++) {
+          formData.append("photos", listImage[i]);
+        }
+
+        formData.append("idsp", idsp[0]?.id_sp);
+        await imageAPI.createImage(formData);
+      }
     } catch (error) {
-      enqueueSnackbar(error.message, {
-        variant: "error",
-        autoHideDuration: 2000,
-      });
+      console.log(error);
     }
   };
 
@@ -152,11 +125,7 @@ function AddProduct() {
   const renderImage = imageUrl?.map((urlImage, idx) => {
     return (
       <div className="relative" key={idx}>
-        <img
-          className="w-[100px] h-[100px] rounded-lg"
-          src={urlImage.url}
-          alt="anhsanpham"
-        />
+        <img className="w-[100px] h-[100px] rounded-lg" src={urlImage.url} alt="anhsanpham" />
         <div
           className="absolute -top-1 -right-1 bg-red-600 text-center text-[12px] text-white px-[6px] rounded-full cursor-pointer"
           name={urlImage.url}
@@ -168,12 +137,37 @@ function AddProduct() {
     );
   });
 
+  const handleAddFormChange = (e) => {
+    e.preventDefault();
+    const fieldName = e.target.getAttribute("name");
+    const fieldValue = e.target.value;
+
+    const newFormData = {...addFormData};
+
+    newFormData[fieldName] = fieldValue;
+
+    console.log(newFormData);
+
+    setAddFormData(newFormData);
+  };
+
+  const handleAddFormSubmit = (e) => {
+    e.preventDefault();
+    const newDetailProduct = {
+      mausac: addFormData.mausac,
+      kichthuoc: addFormData.kichthuoc,
+      giaban: addFormData.giaban,
+      gianhap: addFormData.gianhap,
+    };
+
+    const newDetailProducts = [...detailProduct, newDetailProduct];
+    setDetailProduct(newDetailProducts);
+  };
+
   return (
     <div>
       <form id="addProduct" onSubmit={handleSubmit((data) => setData(data))}>
-        <button className="ml-7 px-10 py-2 mb-5 text-white bg-slate-400 rounded shadow-lg">
-          Add
-        </button>
+        <button className="ml-7 px-10 py-2 mb-5 text-white bg-slate-400 rounded shadow-lg">Add</button>
         <div className="px-7">
           <div className="mt-5">
             <span>Tên sản phẩm </span>
@@ -185,18 +179,7 @@ function AddProduct() {
             />
           </div>
 
-          <div className="mt-5">
-            <span>Thông tin sản phẩm</span> <br />
-            <textarea
-              className="w-full p-2 border border-slate-400 rounded-lg"
-              name="thongtinsanpham"
-              id=""
-              rows="10"
-              {...register("thongtinsanpham")}
-            ></textarea>
-          </div>
-
-          <div>
+          <div className="mt-6">
             <span>Hình ảnh</span>
             <div className="flex gap-4">
               <div className="flex gap-4">
@@ -214,9 +197,7 @@ function AddProduct() {
                   className="w-[100px] h-[100px] border border-slate-400 rounded-lg cursor-pointer"
                   onClick={() => btnActive()}
                 >
-                  <div className="text-[25px] text-[#ccc] text-center leading-[90px] ">
-                    +
-                  </div>
+                  <div className="text-[25px] text-[#ccc] text-center leading-[90px] ">+</div>
                 </div>
                 {renderImage}
               </div>
@@ -230,11 +211,14 @@ function AddProduct() {
                 <select
                   className="p-1 w-[200px] border border-slate-400 rounded-lg"
                   name="loaisanpham"
-                  id=""
                   {...register("loaisanpham")}
                 >
-                  <option value=""></option>
-                  <option value="LSP01">Giày</option>
+                  {typeProduct &&
+                    typeProduct?.map(({id_lsp, ten_lsp}, idx) => (
+                      <option key={idx} value={id_lsp}>
+                        {ten_lsp}
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -243,124 +227,103 @@ function AddProduct() {
                 <select
                   className="p-1 w-[200px] border border-slate-400 rounded-lg"
                   name="thuonghieu"
-                  id=""
                   {...register("thuonghieu")}
                 >
-                  <option value=""></option>
-                  <option value="TH01">Nike</option>
-                  <option value="TH02">Balenciaga</option>
+                  {brand &&
+                    brand?.map(({id_th, ten_th}, idx) => (
+                      <option key={idx} value={id_th}>
+                        {ten_th}
+                      </option>
+                    ))}
                 </select>
               </div>
-
-              <div className="mt-5">
+              {/* <div className="mt-5">
                 <span className="block">Giá nhập</span>
                 <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
                   name="gianhap"
                   {...register("gianhap")}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mt-5">
-                <span className="block">Cân nặng (g)</span>
-                <input
                   className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="cannang"
-                  {...register("cannang")}
                 />
-              </div>
+              </div> */}
               <div className="mt-5">
-                <span className="block">Chiều cao (cm)</span>
+                <span className="block">Giá bán</span>
                 <input
+                  name="giaban"
+                  {...register("giaban")}
                   className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieucao"
-                  {...register("chieucao")}
-                />
-              </div>
-              <div className="mt-5">
-                <span className="block">Chiều rộng (cm)</span>
-                <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieurong"
-                  {...register("chieurong")}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="mt-5">
-                <span className="block">Chiều dài (cm)</span>
-                <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieudai"
-                  {...register("chieudai")}
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-6 mb-[100px]">
-            <table className="w-[1000px]">
-              <thead>
-                <tr>
-                  <th className="h-8 border border-slate-400">Màu sắc</th>
-                  <th className="h-8 border border-slate-400">Kích thước</th>
-                  <th className="h-8 border border-slate-400">Số lượng</th>
-                  <th className="h-8 border border-slate-400">Giá bán</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="w-[25%] border border-slate-400">
-                    <select
-                      name="mausac"
-                      id=""
-                      className="h-8 px-2 w-full outline-none"
-                      {...register("mausac")}
-                    >
-                      <option value=""></option>
-                      <option value="MS01">Hồng</option>
-                    </select>
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <select
-                      name="kichthuoc"
-                      id=""
-                      className="h-8 px-2 w-full outline-none"
-                      {...register("kichthuoc")}
-                    >
-                      <option value=""></option>
-                      <option value="KT05">39</option>
-                    </select>
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <input
-                      name="soluong"
-                      className="h-8 px-2 w-full outline-none"
-                      type="text"
-                      {...register("soluong")}
-                    />
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <input
-                      name="giaban"
-                      className="h-8 px-2 w-full outline-none"
-                      type="text"
-                      {...register("giaban")}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="mt-5">
+            <span>Thông tin sản phẩm</span> <br />
+            <textarea
+              className="w-full p-2 border border-slate-400 rounded-lg"
+              name="thongtinsanpham"
+              id=""
+              rows="10"
+              {...register("thongtinsanpham")}
+            ></textarea>
           </div>
         </div>
       </form>
+
+      <form onSubmit={handleAddFormSubmit}>
+        <div className="flex justify-between gap-5 w-[50%] mt-6 px-7">
+          <div className="w-full">
+            <select
+              name="mausac"
+              onChange={handleAddFormChange}
+              className="h-8 px-2 w-full border border-slate-400 outline-none rounded-lg"
+            >
+              <option value="">Màu sắc</option>
+              {color &&
+                color?.map(({id_ms, ten_ms}, idx) => (
+                  <option key={idx} value={id_ms}>
+                    {ten_ms}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="w-full">
+            <select
+              name="kichthuoc"
+              onChange={handleAddFormChange}
+              className="h-8 px-2 w-full border border-slate-400 outline-none rounded-lg"
+            >
+              <option value="">Kích thước</option>
+              {size &&
+                size?.map(({id_kt, ten_kt}, idx) => (
+                  <option key={idx} value={id_kt}>
+                    {ten_kt}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <button className="px-4 bg-slate-400 rounded-lg">ADD</button>
+        </div>
+      </form>
+
+      <div className="mt-4 mb-10 px-7">
+        <table className="w-[40%]">
+          <thead>
+            <tr>
+              <th className="w-[20%] h-8 border border-slate-400">Màu Sắc</th>
+              <th className="w-[20%] h-8 border border-slate-400">Kích Thước</th>
+            </tr>
+          </thead>
+          <tbody>
+            {detailProduct?.map(({mausac, kichthuoc}, idx) => (
+              <tr key={idx}>
+                <td className="text-center border border-slate-400">{mausac}</td>
+                <td className="text-center border border-slate-400">{kichthuoc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

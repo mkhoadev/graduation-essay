@@ -1,19 +1,12 @@
-import moment from "moment";
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {useSnackbar} from "notistack";
 import productAPI from "../../../../api/productAPI";
-import importInvoiceAPI from "../../../../api/importInvoiceAPI";
-import detailImportInvoiceAPI from "../../../../api/detailImportInvoiceAPI";
 import imageAPI from "../../../../api/imageAPI";
-import {NavLink, useParams} from "react-router-dom";
+import {useNavigate, NavLink, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 
 const defaultValues = {
-  cannang: "",
-  chieucao: "",
-  chieudai: "",
-  chieurong: "",
   giaban: "",
   kichthuoc: "",
   loaisanpham: "",
@@ -28,14 +21,21 @@ const defaultValues = {
 function EditProduct() {
   const {register, handleSubmit, reset} = useForm({...defaultValues});
 
-  const [open, setOpen] = useState(false);
   const [dataDetailProduct, setDataDetailProduct] = useState("");
-  const [dataTypeProduct, setDataTypeProduct] = useState("");
   const [imageUrl, setImageUrl] = useState([]);
   const [listImage, setListImage] = useState([]);
+  const [addImage, setAddImage] = useState([]);
+  const [detailProduct, setDetailProduct] = useState([]);
+  const [addFormData, setAddFormData] = useState({
+    mausac: "",
+    kichthuoc: "",
+    soluong: "",
+  });
+  const [count, setCount] = useState(0);
   const {enqueueSnackbar} = useSnackbar();
 
   let params = useParams();
+  const navigate = useNavigate();
 
   const color = useSelector((state) => state?.color?.colorlist);
   const size = useSelector((state) => state?.size?.sizelist);
@@ -55,18 +55,16 @@ function EditProduct() {
       };
     });
   };
-
   const uploadImage = async (e) => {
-    setListImage(e.target.files);
-    const imageNumber = e.target.files.length + imageUrl.length;
+    const imageNumber = e.target.files.length + imageUrl?.length + listImage?.length;
     if (imageNumber <= 5) {
-      let i = 0;
-      for (i; i < e.target.files.length; i++) {
+      for (let i = 0; i < e.target.files.length; i++) {
         const file = e.target.files[i];
         if (!file) return;
         const base64 = await getBase64(file);
         setImageUrl((oldFile) => [...oldFile, {url: base64}]);
       }
+      setAddImage(e.target.files);
     } else {
       console.log("Image is max 5");
       enqueueSnackbar("Image is max 5", {
@@ -84,38 +82,30 @@ function EditProduct() {
     (async () => {
       try {
         const resProduct = await productAPI.getProduct(params.idsp);
+        const resImage = await imageAPI.getImage(params.idsp);
+        setListImage(resImage);
         reset({
           tensanpham: resProduct[0].ten_sp,
           thongtinsanpham: resProduct[0].thong_tin_sp,
-          cannang: resProduct[0]?.can_nang,
-          chieucao: resProduct[0]?.chieu_cao,
-          chieudai: resProduct[0]?.chieu_dai,
-          chieurong: resProduct[0]?.chieu_rong,
-          giaban: resProduct[0]?.gia_ban,
+          giaban: resProduct[0]?.gia_ban_sp,
+          gianhap: resProduct[0]?.gia_nhap_sp,
           kichthuoc: resProduct[0]?.id_kt,
           loaisanpham: resProduct[0]?.id_lsp,
           mausac: resProduct[0]?.id_ms,
           thuonghieu: resProduct[0]?.id_th,
-          soluong: resProduct[0]?.so_luong_nhap,
-          gianhap: resProduct[0]?.gia_nhap,
         });
         setDataDetailProduct(resProduct);
       } catch (error) {
-        console.log(error);
         enqueueSnackbar(error.message, {
           variant: "error",
           autoHideDuration: 2000,
         });
       }
-    })();
-  }, [reset]);
+    })(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reset, count]);
 
   const dataProduct = (data) => {
     return {
-      cannang: data.cannang,
-      chieucao: data.chieucao,
-      chieudai: data.chieudai,
-      chieurong: data.chieurong,
       giaban: data.giaban,
       kichthuoc: data.kichthuoc,
       loaisanpham: data.loaisanpham,
@@ -127,23 +117,19 @@ function EditProduct() {
   };
 
   const setData = async (data) => {
+    const formData = new FormData();
     try {
       await productAPI.updateProduct(params.idsp, dataProduct(data));
       enqueueSnackbar("Sửa sản phẩm thành công", {
         variant: "success",
         autoHideDuration: 2000,
       });
-      
-      // const formData = new FormData();
-      // if (listImage) {
-      //   for (let i = 0; i < listImage.length; i++) {
-      //     formData.append("photos", listImage[i]);
-      //   }
-
-      //   formData.append("idsp", idsp[0]?.id_sp);
-      //   await imageAPI.createImage(formData);
-      // }
-    
+      navigate("/manage/product/listproducts", {replace: true});
+      for (let i = 0; i < addImage?.length; i++) {
+        formData.append("photos", addImage[i]);
+      }
+      formData.append("idsp", params.idsp);
+      await imageAPI.createImage(formData);
     } catch (error) {
       enqueueSnackbar(error.message, {
         variant: "error",
@@ -155,6 +141,18 @@ function EditProduct() {
   const handleRemoveImage = (e) => {
     const name = e.target.getAttribute("name");
     setImageUrl(imageUrl.filter((item) => item.url !== name));
+  };
+
+  const deleteImage = async (id) => {
+    try {
+      await imageAPI.deleteImage(id);
+      setCount((e) => e + 1);
+    } catch (error) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const renderImage = imageUrl?.map((urlImage, idx) => {
@@ -171,6 +169,51 @@ function EditProduct() {
       </div>
     );
   });
+
+  const editImage = listImage?.map(({id_ha, hinh_anh_sp}, idx) => {
+    return (
+      <div className="relative" key={idx}>
+        <img
+          className="w-[100px] h-[100px] rounded-lg"
+          src={hinh_anh_sp.slice(12, hinh_anh_sp.length)}
+          alt="anhsanpham"
+        />
+        <div
+          className="absolute -top-1 -right-1 bg-red-600 text-center text-[12px] text-white px-[6px] rounded-full cursor-pointer"
+          onClick={() => deleteImage(id_ha)}
+        >
+          x
+        </div>
+      </div>
+    );
+  });
+
+  const handleAddFormChange = (e) => {
+    e.preventDefault();
+    const fieldName = e.target.getAttribute("name");
+    const fieldValue = e.target.value;
+
+    const newFormData = {...addFormData};
+
+    newFormData[fieldName] = fieldValue;
+
+    setAddFormData(newFormData);
+  };
+
+  const handleAddFormSubmit = (e) => {
+    e.preventDefault();
+
+    const newDetailProduct = {
+      mausac: addFormData.mausac,
+      kichthuoc: addFormData.kichthuoc,
+      soluong: addFormData.soluong,
+      giaban: addFormData.giaban,
+      gianhap: addFormData.gianhap,
+    };
+
+    const newDetailProducts = [...detailProduct, newDetailProduct];
+    setDetailProduct(newDetailProducts);
+  };
 
   return (
     <div>
@@ -223,6 +266,7 @@ function EditProduct() {
                   <div className="text-[25px] text-[#ccc] text-center leading-[90px] ">+</div>
                 </div>
                 {renderImage}
+                {editImage}
               </div>
             </div>
           </div>
@@ -275,123 +319,90 @@ function EditProduct() {
                   {...register("gianhap")}
                 />
               </div>
-            </div>
 
-            <div>
               <div className="mt-5">
-                <span className="block">Cân nặng (g)</span>
+                <span className="block">Giá bán</span>
                 <input
                   className="p-1 w-[200px] border border-slate-400 rounded-lg"
                   type="text"
-                  name="cannang"
+                  name="giaban"
                   ref={register}
-                  {...register("cannang")}
-                />
-              </div>
-              <div className="mt-5">
-                <span className="block">Chiều cao (cm)</span>
-                <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieucao"
-                  ref={register}
-                  {...register("chieucao")}
-                />
-              </div>
-              <div className="mt-5">
-                <span className="block">Chiều rộng (cm)</span>
-                <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieurong"
-                  ref={register}
-                  {...register("chieurong")}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="mt-5">
-                <span className="block">Chiều dài (cm)</span>
-                <input
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                  type="text"
-                  name="chieudai"
-                  ref={register}
-                  {...register("chieudai")}
+                  {...register("giaban")}
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-6 mb-[100px]">
-            <table className="w-[1000px]">
-              <thead>
-                <tr>
-                  <th className="h-8 border border-slate-400">Màu sắc</th>
-                  <th className="h-8 border border-slate-400">Kích thước</th>
-                  <th className="h-8 border border-slate-400">Số lượng</th>
-                  <th className="h-8 border border-slate-400">Giá bán</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="w-[25%] border border-slate-400">
-                    <select
-                      name="mausac"
-                      id=""
-                      className="h-8 px-2 w-full outline-none"
-                      ref={register}
-                      {...register("mausac")}
-                    >
-                      {color &&
-                        color?.map(({id_ms, ten_ms}, idx) => (
-                          <option key={idx} value={id_ms}>
-                            {ten_ms}
-                          </option>
-                        ))}
-                    </select>
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <select
-                      name="kichthuoc"
-                      id=""
-                      className="h-8 px-2 w-full outline-none"
-                      ref={register}
-                      {...register("kichthuoc")}
-                    >
-                      {size &&
-                        size?.map(({id_kt, ten_kt}, idx) => (
-                          <option key={idx} value={id_kt}>
-                            {ten_kt}
-                          </option>
-                        ))}
-                    </select>
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <input
-                      name="soluong"
-                      className="h-8 px-2 w-full outline-none"
-                      type="text"
-                      ref={register}
-                      {...register("soluong")}
-                    />
-                  </td>
-                  <td className="w-[25%] border border-slate-400">
-                    <input
-                      name="giaban"
-                      className="h-8 px-2 w-full outline-none"
-                      type="text"
-                      ref={register}
-                      {...register("giaban")}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <button className="mt-7 px-10 py-2 mb-5 text-white bg-sky-600 rounded shadow-lg">Edit</button>
+          <div className="mt-6">
+            <button className="mt-7 px-10 py-2 text-white bg-sky-600 rounded shadow-lg">Edit</button>
           </div>
         </div>
       </form>
+
+      <form onSubmit={handleAddFormSubmit}>
+        <div className="flex justify-between gap-6 w-[66%] mt-6 mb-10 px-7">
+          <div className="w-[30%]">
+            <select
+              name="mausac"
+              onChange={handleAddFormChange}
+              className="h-8 px-2 w-full border border-slate-400 outline-none rounded-lg"
+            >
+              <option value="">Màu sắc</option>
+              {color &&
+                color?.map(({id_ms, ten_ms}, idx) => (
+                  <option key={idx} value={id_ms}>
+                    {ten_ms}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="w-[30%]">
+            <select
+              name="kichthuoc"
+              onChange={handleAddFormChange}
+              className="h-8 px-2 w-full border border-slate-400 outline-none rounded-lg"
+            >
+              <option value="">Kích thước</option>
+              {size &&
+                size?.map(({id_kt, ten_kt}, idx) => (
+                  <option key={idx} value={id_kt}>
+                    {ten_kt}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="w-[30%]">
+            <input
+              name="soluong"
+              placeholder="Số lượng"
+              onChange={handleAddFormChange}
+              className="h-8 px-2 w-full border border-slate-400 outline-none rounded-lg"
+              type="text"
+            />
+          </div>
+          <button className="px-4 bg-slate-400 rounded-lg">ADD</button>
+        </div>
+      </form>
+      <div className="mt-4 mb-10 px-7">
+        <table className="w-[60%]">
+          <thead>
+            <tr>
+              <th className="h-8 border border-slate-400">Màu Sắc</th>
+              <th className="h-8 border border-slate-400">Kích Thước</th>
+              <th className="h-8 border border-slate-400">Số Lượng</th>
+            </tr>
+          </thead>
+          <tbody>
+            {detailProduct?.map(({mausac, kichthuoc, soluong}, idx) => (
+              <tr key={idx}>
+                <td className="w-[20%] text-center border border-slate-400">{mausac}</td>
+                <td className="w-[20%] text-center border border-slate-400">{kichthuoc}</td>
+                <td className="w-[20%] text-center border border-slate-400">{soluong}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

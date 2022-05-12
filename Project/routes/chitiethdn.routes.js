@@ -6,9 +6,13 @@ module.exports = (app) => {
     next();
   });
 
-  app.post("/api/manage/detailImportInvoice/add", detailImportInvoice.createDetailImportInvoice);
+  app.post("/api/manage/detail_importInvoice/add", detailImportInvoice.createDetailImportInvoice);
 
-  // app.get("/api/manage/detailImportInvoice/list", detailImportInvoice.getListImportInvoice);
+  app.get("/api/manage/detailImportInvoice/sum_number/idsp=:idsp", detailImportInvoice.sumNumber);
 
-  // app.get("/api/manage/detailImportInvoice/id", detailImportInvoice.getId)
+  app.get("/api/manage/detailExportInvoice/sum_number", detailImportInvoice.sumNumberProduct);
+
+  app.get("/api/manage/detail_import_invoice/list/idhdn=:idhdn", detailImportInvoice.getDetailProductList);
+
+  app.put("/api/manage/detail_import_invoice/add_product", detailImportInvoice.addNumberProduct);
 };

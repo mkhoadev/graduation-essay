@@ -27,5 +27,5 @@ module.exports = (app) => {
 
   app.get("/api/manage/photos/id=:id", image.getImage)
 
-  // app.get("/api/manage/photos/id=:id", image.getImage);
+  app.delete("/api/manage/photos/delete=:id", image.deleteImage);
 };

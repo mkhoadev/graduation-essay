@@ -20,9 +20,11 @@ function Product() {
         unwrapResult(dispatch(await brand()));
         unwrapResult(dispatch(await size()));
         unwrapResult(dispatch(await typeProduct()));
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     })();
-  });
+  }, []);
   return (
     <div>
       <Routes>

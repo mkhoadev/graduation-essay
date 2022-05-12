@@ -9,15 +9,9 @@ module.exports = {
     }
 
     const product = new Product({
+      giaban: req.body.giaban,
       tensanpham: req.body.tensanpham,
       thongtinsanpham: req.body.thongtinsanpham,
-      giaban: req.body.giaban,
-      cannang: req.body.cannang,
-      chieucao: req.body.chieucao,
-      chieurong: req.body.chieurong,
-      chieudai: req.body.chieudai,
-      mausac: req.body.mausac,
-      kichthuoc: req.body.kichthuoc,
       loaisanpham: req.body.loaisanpham,
       thuonghieu: req.body.thuonghieu,
     });
@@ -68,13 +62,28 @@ module.exports = {
     });
   },
 
+  getProductList: (req, res) => {
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!",
+      });
+    }
+    Product.getProductList((err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
   updateProduct: (req, res) => {
     if (!req.body) {
       res.status(400).send({
         message: "Content can not be empty!",
       });
     }
-    Product.updateProduct( req.params.id , new Product(req.body), (err, data) => {
+    Product.updateProduct(req.params.id, new Product(req.body), (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({

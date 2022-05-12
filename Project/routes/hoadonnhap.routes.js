@@ -10,5 +10,9 @@ module.exports = (app) => {
 
   app.get("/api/manage/importInvoice/list", importInvoice.getListImportInvoice);
 
-  app.delete("/api/manage/importInvoice/delete/id=:id", importInvoice.deleteImportInvoice)
+  app.get("/api/manage/importInvoice/sum_price/idhdn=:idhdn", importInvoice.sumPriceInvoice);
+
+  app.get("/api/manage/importInvoice/sum_price", importInvoice.sumPriceInvoices);
+
+  app.delete("/api/manage/importInvoice/delete/id=:id", importInvoice.deleteImportInvoice);
 };

@@ -3,9 +3,10 @@ import {Route, Routes, useLocation} from "react-router-dom";
 import NotFound from "../components/NotFound";
 import Menu from "./components/Menu";
 import Navigation from "./components/Navigation";
+import Category from "./pages/Category";
 
-import LoginManage from "./pages/LoginManage";
-
+const LoginManage = React.lazy(() => import("./pages/LoginManage"));
+const Staff = React.lazy(() => import("./pages/Staff"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Delivery = React.lazy(() => import("./pages/Delivery"));
 const Product = React.lazy(() => import("./pages/Product"));
@@ -28,9 +29,11 @@ function Manage() {
           <Routes>
             <Route path="/login" element={<LoginManage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/category/*" element={<Category />} />
             <Route path="/product/*" element={<Product />} />
-            <Route path="/bill" element={<Bill />} />
+            <Route path="/bill/*" element={<Bill />} />
             <Route path="/delivery" element={<Delivery />} />
+            <Route path="/staff" element={<Staff />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>

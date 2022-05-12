@@ -1,70 +1,8 @@
-POST http://localhost:3001/api/auth/signup
+POST http://localhost:3001/api/manage/delivier/add
 Content-Type: application/json
 
 {
-    "email": "daominhkhoa@gmail.com",
-    "password": "12345",
-    "ngaytaotk": "2000-10-10"
-}
-
-###
-GET http://localhost:3001/api/checkuser/email=daominhkhoa1082000@gmail.com
-
-###
-POST http://localhost:3001/api/auth/manage/signup
-Content-Type: application/json
-
-{
-    "name": "Nguyen Van Nhan",
-    "email": "nvnhan@gmail.com",
-    "password": "12345",
-    "sex": "Nam",
-    "phone": "0365254252",
-    "birthday": "2000-10-08",
-    "address": "30/4, Hung Loi, Ninh Kieu, Can Tho"
-}
-
-###
-POST http://localhost:3001/api/auth/manage/signin
-Content-Type: application/json
-
-{
-    "email": "daominhkhoa1082001@gmail.com",
-    "password": "12345"
-}
-
-
-###
-GET http://localhost:3001/api/manage/checkEmployee/email=daominhkhoa1082000@gmail.com
-
-###
-POST http://localhost:3001/api/manage/product/add
-Content-Type: application/json
-
-{
-    "cannang":  500,
-    "chieucao":  10,
-    "chieudai":  50,
-    "chieurong":  25,
-    "giaban":  750000,
-    "kichthuoc":  "KT05",
-    "loaisanpham":  "LSP01",
-    "mausac":  "MS01",
-    "tensanpham":  "Giày Nike",
-    "thongtinsanpham":  "Giày rất đẹp",
-    "thuonghieu":  "TH01"
-}
-
-###
-DELETE  http://localhost:3001/api/manage/importInvoice/delete/id_hdn=HDN01
-
-###
-POST http://localhost:3001/api/manage/detailImportInvoice/add
-Content-Type: application/json
-
-{
-    "gianhap":  50000,
-    "soluong":  10,
-    "idsp":  "SP01",
-    "idhdn":  "HDN01"
+  "idhdx": "HDX011",
+  "idnv": "NV06",
+  "trangthai": "Đang xử lý"
 }

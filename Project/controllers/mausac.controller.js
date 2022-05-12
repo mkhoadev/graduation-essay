@@ -36,8 +36,23 @@ module.exports = {
     });
   },
 
-  getList: (req, res) => {
-    Color.getList((err, data) => {
+  getOneColor: (req, res) => {
+    if (!req.params) {
+      res.status(400).send({
+        message: "Content can not be empty!",
+      });
+    }
+    Color.getOneColor(req.params.idms, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  getListColor: (req, res) => {
+    Color.getListColor((err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

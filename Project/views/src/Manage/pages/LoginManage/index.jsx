@@ -33,22 +33,21 @@ function LoginManage() {
     routeLogin(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
 
-  const dataUser = (data) => {
-    return {
-      email: data.email,
-      password: data.password,
-    };
-  };
   // const dataUser = (data) => {
   //   return {
   //     email: data.email,
-  //     password: sha256(data.password),
+  //     password: data.password,
   //   };
   // };
+  const dataUser = (data) => {
+    return {
+      email: data.email,
+      password: sha256(data.password),
+    };
+  };
 
   const setData = async (data) => {
     try {
-      // console.log(dataUser(data));
       unwrapResult(dispatch(await login(dataUser(data))));
     } catch (error) {
       console.log(error);

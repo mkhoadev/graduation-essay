@@ -2,7 +2,7 @@ import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import productAPI from "../api/productAPI";
 
 export const product = createAsyncThunk("product/list", async () => {
-  const data = await productAPI.getListProducts();
+  const data = await productAPI.getProductList();
 
   localStorage.setItem("productlist", JSON.stringify(data));
 
@@ -14,7 +14,12 @@ const productSlice = createSlice({
   initialState: {
     productlist: JSON.parse(localStorage.getItem("product")) || [{}],
   },
-  reducers: {},
+  reducers: {
+    addListProduct(state, action) {
+      state.productlist = action.payload;
+      localStorage.setItem("productlist", JSON.stringify(action.payload));
+    },
+  },
   extraReducers: {
     [product.fulfilled]: (state, action) => {
       state.productlist = action.payload;
@@ -22,5 +27,6 @@ const productSlice = createSlice({
   },
 });
 
-const {reducer} = productSlice;
+const {reducer, actions} = productSlice;
+export const {addListProduct} = actions;
 export default reducer;

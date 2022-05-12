@@ -19,35 +19,54 @@ User.createUser = (newUser, result) => {
 };
 
 User.getUser = (email, password, result) => {
-  mysql.query(
-    "SELECT * FROM khach_hang WHERE (email_kh=? && mat_khau_kh=?)",
-    [email, password],
-    (err, res) => {
-      if (err) {
-        console.log("ERROR: ", err);
-        result(null, err);
-        return;
-      }
-      console.log("get user success");
-      result(null, res);
-    },
-  );
+  mysql.query("SELECT * FROM khach_hang WHERE (email_kh=? && mat_khau_kh=?)", [email, password], (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    }
+    console.log("get user success");
+    result(null, res);
+  });
 };
 
 User.getCheckuser = (email, result) => {
-  mysql.query(
-    `SELECT email_kh FROM khach_hang WHERE email_kh='${email}'`,
-    (err, res) => {
-      if (err) {
-        console.log("ERROR: ", err);
-        result(null, err);
-        return;
-      } else {
-        console.log("check eamil user success");
-        result(null, res);
-      }
-    },
-  );
+  mysql.query(`SELECT email_kh FROM khach_hang WHERE email_kh='${email}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    } else {
+      console.log("check eamil user success");
+      result(null, res);
+    }
+  });
+};
+
+User.getOneUser = (id_kh, result) => {
+  mysql.query(`SELECT * FROM khach_hang WHERE id_kh='${id_kh}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    } else {
+      console.log("check eamil user success");
+      result(null, res);
+    }
+  });
+};
+
+User.changePassword = (email, password, result) => {
+  mysql.query(`UPDATE khach_hang SET mat_khau_kh='${password}' WHERE email_kh='${email}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    } else {
+      console.log("change password user success");
+      result(null, res);
+    }
+  });
 };
 
 module.exports = User;

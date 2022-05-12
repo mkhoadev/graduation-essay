@@ -2,7 +2,7 @@ import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import colorAPI from "../api/colorAPI";
 
 export const color = createAsyncThunk("color/list", async () => {
-  const data = await colorAPI.getList();
+  const data = await colorAPI.getListColor();
 
   localStorage.setItem("color", JSON.stringify(data));
 
