@@ -14,6 +14,11 @@ const sizeAPI = {
     const API_URL = "/api/manage/size/list";
     return axiosClient.get(API_URL);
   },
+
+  deSize(idkt) {
+    const API_URL = `/api/manage/size/delete/${idkt}`;
+    return axiosClient.delete(API_URL);
+  },
 };
 
 export default sizeAPI;

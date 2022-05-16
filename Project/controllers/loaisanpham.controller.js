@@ -45,4 +45,13 @@ module.exports = {
       } else res.status(200).send(data);
     });
   },
+  deTypeProduct: (req, res) => {
+    TypeProduct.deTypeProduct(req.params.idlsp, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
 };

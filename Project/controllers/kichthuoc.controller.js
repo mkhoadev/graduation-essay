@@ -45,4 +45,14 @@ module.exports = {
       } else res.status(200).send(data);
     });
   },
+  
+  deSize: (req, res) => {
+    Size.deSize(req.params.idkt, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
 };

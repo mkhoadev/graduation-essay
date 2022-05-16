@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {MdOutlineSpaceDashboard} from "react-icons/md";
+import {AiOutlineBarChart, AiOutlineAppstoreAdd} from "react-icons/ai";
 import {BsBoxSeam, BsPeople} from "react-icons/bs";
 import {TiThMenuOutline} from "react-icons/ti";
 import {RiBillLine} from "react-icons/ri";
@@ -10,16 +10,10 @@ import {useSelector} from "react-redux";
 function Navigation() {
   const [openMenuProduct, setOpenMenuProduct] = useState(false);
 
-  const [openMenuBill, setOpenMenuBill] = useState(false);
-
   const [openCategory, setOpenCategory] = useState(false);
 
   const handleMenuProduct = () => {
     setOpenMenuProduct(!openMenuProduct);
-  };
-
-  const handleMenuBill = () => {
-    setOpenMenuBill(!openMenuBill);
   };
 
   const handleCategory = () => {
@@ -40,8 +34,8 @@ function Navigation() {
           {role === "CV01" && (
             <Link to="/manage/dashboard">
               <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
-                <MdOutlineSpaceDashboard size={20} />
-                <p>Thống kê</p>
+                <AiOutlineBarChart size={30} />
+                <p className="text-[16px]">Thống kê</p>
               </div>
             </Link>
           )}
@@ -53,16 +47,16 @@ function Navigation() {
                   onClick={handleMenuProduct}
                   className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300"
                 >
-                  <BsBoxSeam size={20} />
-                  <p>Sản phẩm</p>
+                  <BsBoxSeam size={30} />
+                  <p className="text-[16px]">Sản phẩm</p>
                 </div>
                 {openMenuProduct ? (
                   <div className="pl-14 text-[14px]">
                     <Link to="/manage/product/add">
-                      <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Thêm sản phẩm</p>
+                      <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Thêm sản phẩm</p>
                     </Link>
                     <Link to="/manage/product/listproducts">
-                      <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Danh sách sản phẩm</p>
+                      <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Danh sách sản phẩm</p>
                     </Link>
                   </div>
                 ) : (
@@ -76,17 +70,23 @@ function Navigation() {
                     onClick={handleCategory}
                     className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300"
                   >
-                    <TiThMenuOutline size={20} />
-                    <p>Danh mục</p>
+                    <TiThMenuOutline size={30} />
+                    <p className="text-[16px]">Danh mục</p>
                   </div>
 
                   {openCategory ? (
                     <div className="pl-14 text-[14px]">
                       <Link to="/manage/category/color">
-                        <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Màu sắc</p>
+                        <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Màu sắc</p>
                       </Link>
                       <Link to="/manage/category/size">
-                        <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Kích thước</p>
+                        <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Kích thước</p>
+                      </Link>
+                      <Link to="/manage/category/brand">
+                        <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Thương hiệu</p>
+                      </Link>
+                      <Link to="/manage/category/type_product">
+                        <p className="hover:pl-4 hover:font-semibold p-2 text-[16px] duration-200">Loại sản phẩm</p>
                       </Link>
                     </div>
                   ) : (
@@ -95,46 +95,38 @@ function Navigation() {
                 </>
               )}
 
-              {(role === "CV01" || role === "CV02") && (
-                <div>
-                  <div
-                    onClick={handleMenuBill}
-                    className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300"
-                  >
-                    <RiBillLine size={20} />
-                    <p>Hóa đơn</p>
+              {(role === "CV01" || role === "CV03") && (
+                <Link to="/manage/bill/import_invoice">
+                  <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
+                    <AiOutlineAppstoreAdd size={30} />
+                    <p className="text-[16px]">Lập hóa đơn</p>
                   </div>
-                  {openMenuBill ? (
-                    <div className="pl-14 text-[14px]">
-                      {role === "CV01" && (
-                        <Link to="/manage/bill/import_invoice">
-                          <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Hóa đơn nhập</p>
-                        </Link>
-                      )}
-                      <Link to="/manage/bill/export_invoice">
-                        <p className="hover:pl-4 hover:font-semibold p-2 duration-200">Hóa đơn xuất</p>
-                      </Link>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
+                </Link>
               )}
 
-              <Link to="/manage/delivery">
+              {(role === "CV01" || role === "CV02") && (
+                <Link to="/manage/bill/export_invoice">
+                  <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
+                    <RiBillLine size={30} />
+                    <p className="text-[16px]">Đơn hàng</p>
+                  </div>
+                </Link>
+              )}
+
+              {/* <Link to="/manage/delivery">
                 <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
                   <GrDeliver size={20} />
                   <p>Giao hàng</p>
                 </div>
-              </Link>
+              </Link> */}
             </>
           )}
 
           {role === "CV01" && (
             <Link to="/manage/staff">
               <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
-                <BsPeople size={20} />
-                <p>Nhân viên</p>
+                <BsPeople size={30} />
+                <p className="text-[16px]">Nhân viên</p>
               </div>
             </Link>
           )}

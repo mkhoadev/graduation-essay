@@ -11,4 +11,6 @@ module.exports = (app) => {
   app.get("/api/manage/typeproduct/id=:id", typeProduct.getTypeProduct);
 
   app.get("/api/manage/typeproduct/list", typeProduct.getList);
+
+  app.delete("/api/manage/typeproduct/delete/:idlsp", typeProduct.deTypeProduct);
 };

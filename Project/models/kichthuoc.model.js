@@ -29,13 +29,25 @@ Size.getSize = (id, result) => {
 };
 
 Size.getList = (result) => {
-  mysql.query("SELECT * FROM kich_thuoc ORDER BY SUBSTRING(id_kt,4)*1 ASC", (err, res) => {
+  mysql.query("SELECT * FROM kich_thuoc ORDER BY ten_kt ASC", (err, res) => {
     if (err) {
       console.log("ERROR: ", err);
       result(err, null);
       return;
     }
     console.log("select list size");
+    result(null, res);
+  });
+};
+
+Size.deSize = (idkt, result) => {
+  mysql.query(`DELETE FROM kich_thuoc WHERE id_kt='${idkt}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("Delete size success!");
     result(null, res);
   });
 };

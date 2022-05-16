@@ -11,4 +11,6 @@ module.exports = (app) => {
   app.get("/api/manage/size/id=:id", size.getSize);
 
   app.get("/api/manage/size/list", size.getList);
+
+  app.delete("/api/manage/size/delete/:idkt", size.deSize);
 };

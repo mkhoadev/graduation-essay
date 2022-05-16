@@ -13,4 +13,6 @@ module.exports = (app) => {
   app.get("/api/color/idms=:idms", color.getOneColor)
 
   app.get("/api/color/list", color.getListColor);
+
+  app.delete("/api/color/delete_color/:idms", color.deColor);
 };

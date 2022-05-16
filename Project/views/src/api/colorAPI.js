@@ -19,6 +19,10 @@ const colorAPI = {
     const API_URL = "/api/color/list";
     return axiosClient.get(API_URL);
   },
+  deColor(idms) {
+    const API_URL = `/api/color/delete_color/${idms}`;
+    return axiosClient.delete(API_URL);
+  },
 };
 
 export default colorAPI;

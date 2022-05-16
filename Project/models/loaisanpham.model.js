@@ -40,4 +40,16 @@ TypeProduct.getList = (result) => {
   });
 };
 
+TypeProduct.deTypeProduct = (idlsp, result) => {
+  mysql.query(`DELETE FROM loai_san_pham WHERE id_lsp = '${idlsp}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("Delete type product success!");
+    result(null, res);
+  });
+};
+
 module.exports = TypeProduct;

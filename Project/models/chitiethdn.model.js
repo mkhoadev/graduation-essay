@@ -2,7 +2,7 @@ const mysql = require("./db");
 
 const DetailImportInvoice = function (detailImportInvoice) {
   this.gia_nhap = detailImportInvoice.gianhap;
-  this.so_luong_hdn = detailImportInvoice.soluong;
+  this.so_luong_nhap = detailImportInvoice.soluong;
   this.id_ms = detailImportInvoice.idms;
   this.id_kt = detailImportInvoice.idkt;
   this.id_sp = detailImportInvoice.idsp;

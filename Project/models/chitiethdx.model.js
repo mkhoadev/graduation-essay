@@ -7,8 +7,8 @@ const DetailExportInvoice = function (detailExportInvoice) {
   this.id_hdx = detailExportInvoice.idhdx;
   this.id_ms = detailExportInvoice.idms;
   this.id_kt = detailExportInvoice.idkt;
-  this.mau_sac = detailExportInvoice.tenms;
-  this.kich_thuoc = detailExportInvoice.tenkt;
+  this.ten_ms = detailExportInvoice.tenms;
+  this.ten_kt = detailExportInvoice.tenkt;
 };
 
 DetailExportInvoice.createDetailExportInvoice = (newDetailExportInvoice, result) => {

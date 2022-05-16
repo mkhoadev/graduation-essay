@@ -5,7 +5,6 @@ const VerifyEmail = function (verify) {
 };
 
 VerifyEmail.sendCode = (newverify, result) => {
-  console.log(newverify);
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

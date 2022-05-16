@@ -12,7 +12,7 @@ module.exports = {
       mausac: req.body.mausac,
     });
 
-    Color.createProduct(color, (err, data) => {
+    Color.createColor(color, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,
@@ -53,6 +53,16 @@ module.exports = {
 
   getListColor: (req, res) => {
     Color.getListColor((err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  deColor: (req, res) => {
+    Color.deColor(req.params.idms, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

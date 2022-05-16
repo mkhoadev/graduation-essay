@@ -40,6 +40,7 @@ function ExportInvoice() {
   const [count, setCount] = useState(0);
   const [listOrder, setListOrder] = useState([]);
   const [idOrder, setIdOrder] = useState("");
+  const [customer, setCustomer] = useState([]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openCancel, setOpenCancel] = useState(false);
@@ -97,6 +98,8 @@ function ExportInvoice() {
 
   const handleView = async (id_hdx) => {
     handleOpenView();
+    const res = await exportInvoiceAPI.getExportInvoice(id_hdx);
+    setCustomer(res);
     const data = await detailExportInvoiceAPI.getDetailExportInvoice(id_hdx);
     setListOrder(data);
   };
@@ -218,13 +221,13 @@ function ExportInvoice() {
                 <div className="">
                   <div className="">
                     <p>
-                      Tên khách hàng: <strong>{params.row.ten_kh}</strong>
+                      Tên khách hàng: <strong>{customer[0]?.ten_kh}</strong>
                     </p>
                     <p>
-                      Số điện thoại: <strong>{params.row.sdt_kh}</strong>
+                      Số điện thoại: <strong>{customer[0]?.so_dien_thoai}</strong>
                     </p>
                     <p>
-                      Địa chỉ: <strong>{params.row.dia_chi}</strong>
+                      Địa chỉ: <strong>{customer[0]?.dia_chi_hdx}</strong>
                     </p>
                   </div>
                   <div>

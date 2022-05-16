@@ -14,6 +14,11 @@ const typeProductAPI = {
     const API_URL = "/api/manage/typeproduct/list";
     return axiosClient.get(API_URL);
   },
+
+  deTypeProduct(idlsp) {
+    const API_URL = `/api/manage/typeproduct/delete/${idlsp}`;
+    return axiosClient.delete(API_URL);
+  },
 };
 
 export default typeProductAPI;
