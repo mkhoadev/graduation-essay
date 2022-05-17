@@ -23,4 +23,6 @@ module.exports = (app) => {
   app.delete("/api/manage/exportInvoice/delete/id=:id", exportInvoice.deleteExportInvoice);
 
   app.put("/api/manage/exportInvoice/wait_orders/idkh=:idkh", exportInvoice.getOrders);
+
+  app.get("/api/manage/exportInvoice/wait_orders/list", exportInvoice.numberWait);
 };

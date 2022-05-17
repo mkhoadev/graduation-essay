@@ -1,15 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AiOutlineBarChart, AiOutlineAppstoreAdd} from "react-icons/ai";
 import {BsBoxSeam, BsPeople} from "react-icons/bs";
 import {TiThMenuOutline} from "react-icons/ti";
 import {RiBillLine} from "react-icons/ri";
-import {GrDeliver} from "react-icons/gr";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
+import exportInvoiceAPI from "../../../api/exportInvoiceAPI";
 
 function Navigation() {
   const [openMenuProduct, setOpenMenuProduct] = useState(false);
-
+  const [number, setNumber] = useState([]);
   const [openCategory, setOpenCategory] = useState(false);
 
   const handleMenuProduct = () => {
@@ -23,6 +23,13 @@ function Navigation() {
   const isLogin = useSelector((state) => state.employee?.current[0]?.email_nv);
 
   const role = useSelector((state) => state.employee?.current[0]?.id_cv);
+
+  useEffect(() => {
+    (async () => {
+      const waitOrder = await exportInvoiceAPI.numberWait();
+      setNumber(waitOrder);
+    })();
+  }, []);
 
   return (
     <div className="h-[100vh] bg-slate-200">
@@ -108,17 +115,12 @@ function Navigation() {
                 <Link to="/manage/bill/export_invoice">
                   <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
                     <RiBillLine size={30} />
-                    <p className="text-[16px]">Đơn hàng</p>
+                    <p className="text-[16px]">
+                      Đơn hàng <span className="font-bold text-red-500">({number.length})</span>
+                    </p>
                   </div>
                 </Link>
               )}
-
-              {/* <Link to="/manage/delivery">
-                <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
-                  <GrDeliver size={20} />
-                  <p>Giao hàng</p>
-                </div>
-              </Link> */}
             </>
           )}
 

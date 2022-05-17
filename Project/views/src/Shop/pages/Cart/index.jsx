@@ -65,18 +65,12 @@ function Cart() {
               <p className="px-5 text-[18px]">
                 {giam_gia ? (
                   <>
-                    {(gia_ban - (gia_ban * giam_gia) / 100).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      gia_ban - (gia_ban * giam_gia) / 100,
+                    )}
                   </>
                 ) : (
-                  <>
-                    {gia_ban.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </>
+                  <>{new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(gia_ban)}</>
                 )}
               </p>
             </div>
@@ -97,17 +91,15 @@ function Cart() {
               <p className="px-5 text-[18px] font-bold">
                 {!!giam_gia ? (
                   <>
-                    {(so_luong_xuat * (gia_ban - (gia_ban * giam_gia) / 100)).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      so_luong_xuat * (gia_ban - (gia_ban * giam_gia) / 100),
+                    )}
                   </>
                 ) : (
                   <>
-                    {(so_luong_xuat * gia_ban).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      so_luong_xuat * gia_ban,
+                    )}
                   </>
                 )}
               </p>
@@ -141,19 +133,14 @@ function Cart() {
                 <div className="w-[60%]">
                   <span>Tạm tính: </span>
                 </div>
-                <div>
-                  {sumPrice.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </div>
+                <div>{new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(sumPrice)}</div>
               </div>
               <div className="flex w-full">
                 <div className="w-[60%]">
                   <span>Phí vận chuyển: </span>
                 </div>
                 <div>
-                  <span>{sumPrice > 1000000 ? "Miễn phí" : "30.000 VND"}</span>
+                  <span>{sumPrice > 1000000 ? "Miễn phí" : "30.000 đ"}</span>
                 </div>
               </div>
               <div className="flex w-full">
@@ -162,10 +149,9 @@ function Cart() {
                 </div>
                 <div>
                   <span className="font-bold">
-                    {(sumPrice > 1000000 ? sumPrice : sumPrice + 30000).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      sumPrice > 1000000 ? sumPrice : sumPrice + 30000,
+                    )}
                   </span>
                 </div>
               </div>

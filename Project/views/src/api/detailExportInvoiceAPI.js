@@ -18,7 +18,10 @@ const detailExportInvoiceAPI = {
     const API_URL = "/api/manage/detail_exportInvoice/sum_number";
     return axiosClient.get(API_URL, {params});
   },
-  
+  getProduct(params) {
+    const API_URL = "/api/manage/detail_exportInvoice/product";
+    return axiosClient.get(API_URL, {params});
+  }
 };
 
 export default detailExportInvoiceAPI;

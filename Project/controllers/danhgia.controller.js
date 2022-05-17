@@ -11,10 +11,21 @@ module.exports = {
     const review = new Review({
       sosao: req.body.sosao,
       noidung: req.body.noidung,
+      ngaydg: req.body.ngaydg,
       idhdx: req.body.idhdx,
+      idsp: req.body.idsp,
+      idms: req.body.idms,
+      idkt: req.body.idkt,
     });
 
     Review.createReview(review, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200);
+    });
+    Review.getIdReview((err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,
@@ -45,6 +56,26 @@ module.exports = {
 
   getReviewProduct: (req, res) => {
     Review.getReviewProduct(req.params.idsp, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  getReviewInvoice: (req, res) => {
+    Review.getReviewInvoice(req.params.idhdx, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+  
+  getOneReview: (req, res) => {
+    Review.getOneReview(req.query, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

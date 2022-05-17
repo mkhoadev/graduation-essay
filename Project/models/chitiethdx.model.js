@@ -86,4 +86,17 @@ DetailExportInvoice.sumNumber = (idsp, result) => {
   );
 };
 
+DetailExportInvoice.getProduct = (data, result) => {
+  mysql.query(
+    `SELECT * FROM chi_tiet_hdx INNER JOIN san_pham ON chi_tiet_hdx.id_sp = san_pham.id_sp WHERE chi_tiet_hdx.id_ms='${data.idms}' AND chi_tiet_hdx.id_kt='${data.idkt}' AND chi_tiet_hdx.id_sp ='${data.idsp}' AND chi_tiet_hdx.id_hdx='${data.idhdx}'`,
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+      }
+      result(null, res);
+    },
+  );
+};
+
 module.exports = DetailExportInvoice;

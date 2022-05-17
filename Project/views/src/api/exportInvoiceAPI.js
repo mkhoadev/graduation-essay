@@ -44,6 +44,11 @@ const exportInvoiceAPI = {
     const API_URL = `/api/manage/exportInvoice/wait_orders/idkh=${idkh}`;
     return axiosClient.put(API_URL, status);
   },
+
+  numberWait() {
+    const API_URL = `/api/manage/exportInvoice/wait_orders/list`;
+    return axiosClient.get(API_URL);
+  }
 };
 
 export default exportInvoiceAPI;

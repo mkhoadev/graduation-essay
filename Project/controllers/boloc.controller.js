@@ -40,4 +40,14 @@ module.exports = {
       } else res.status(200).send(data);
     });
   },
+
+  rangePrice: (req, res) => {
+    Filter.rangePrice(req.query, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
 };

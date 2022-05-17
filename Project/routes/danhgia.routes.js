@@ -13,4 +13,8 @@ module.exports = (app) => {
   app.get("/api/manage/review/idhdx=:idhdx", review.getReview);
 
   app.get("/api/manage/review/idsp=:idsp", review.getReviewProduct)
+  
+  app.get("/api/manage/review/idhdx=:idhdx", review.getReviewInvoice)
+
+  app.get("/api/manage/one_review", review.getOneReview)
 };

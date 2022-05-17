@@ -19,6 +19,11 @@ const filterAPI = {
     const API_URL = `/api/manage/filter/search/${key}`;
     return axiosClient.get(API_URL);
   },
+
+  rangePrice(params) {
+    const API_URL = "/api/manage/filter/range_price";
+    return axiosClient.get(API_URL, {params});
+  },
 };
 
 export default filterAPI;

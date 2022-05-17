@@ -1,5 +1,4 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import colorAPI from "../api/colorAPI";
 
 export const filter = createAsyncThunk("filter/list", async () => {
   const data = await filterAPI.getList();

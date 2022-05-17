@@ -68,7 +68,7 @@ module.exports = {
 
   sumPriceInvoices: (req, res) => {
     if (req.query.dateStart && req.query.dateEnd) {
-      ExportInvoice.turnover(req.query.dateStart, req.query.dateEnd,(err, data) => {
+      ExportInvoice.turnover(req.query.dateStart, req.query.dateEnd, (err, data) => {
         if (err) {
           res.status(500).send({
             message: err.message,
@@ -84,7 +84,6 @@ module.exports = {
         } else res.status(200).send(data);
       });
     }
-    
   },
 
   getExportInvoice: (req, res) => {
@@ -134,6 +133,16 @@ module.exports = {
 
   getOrders: (req, res) => {
     ExportInvoice.getOrders(req.params.idkh, req.body.status, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  numberWait: (req, res) => {
+    ExportInvoice.numberWait((err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

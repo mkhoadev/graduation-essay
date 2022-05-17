@@ -89,4 +89,14 @@ module.exports = {
       } else res.status(200).send(data);
     });
   },
+
+  getProduct: (req, res) => {
+    DetailExportInvoice.getProduct(req.query, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
 };

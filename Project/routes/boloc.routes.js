@@ -13,4 +13,6 @@ module.exports = (app) => {
   app.get("/api/manage/filter/sortSize/:key", filter.sortSize);
 
   app.get("/api/manage/filter/search/:key", filter.search);
+
+  app.get("/api/manage/filter/range_price", filter.rangePrice);
 };

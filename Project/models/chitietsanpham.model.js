@@ -133,9 +133,9 @@ DetailProduct.updateNumberProduct = (newInfo, result) => {
   );
 };
 
-DetailProduct.getNumberOneProduct = (newInfo, result) => {
+DetailProduct.getNumberOneProduct = (product, result) => {
   mysql.query(
-    `SELECT * from chi_tiet_sp INNER JOIN kich_thuoc ON chi_tiet_sp.id_kt = kich_thuoc.id_kt INNER JOIN mau_sac ON chi_tiet_sp.id_ms = mau_sac.id_ms INNER JOIN san_pham ON san_pham.id_sp = chi_tiet_sp.id_sp LEFT JOIN khuyen_mai ON khuyen_mai.id_sp = san_pham.id_sp WHERE (chi_tiet_sp.id_sp ='${newInfo.idsp}' AND chi_tiet_sp.id_ms ='${newInfo.idms}' AND chi_tiet_sp.id_kt ='${newInfo.idkt}')`,
+    `SELECT * from chi_tiet_sp INNER JOIN kich_thuoc ON chi_tiet_sp.id_kt = kich_thuoc.id_kt INNER JOIN mau_sac ON chi_tiet_sp.id_ms = mau_sac.id_ms INNER JOIN san_pham ON san_pham.id_sp = chi_tiet_sp.id_sp LEFT JOIN khuyen_mai ON khuyen_mai.id_sp = san_pham.id_sp WHERE (chi_tiet_sp.id_sp ='${product.idsp}' AND chi_tiet_sp.id_ms ='${product.idms}' AND chi_tiet_sp.id_kt ='${product.idkt}')`,
     (err, res) => {
       if (err) {
         console.log("ERROR: ", err);

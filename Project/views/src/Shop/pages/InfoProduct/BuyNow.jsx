@@ -175,18 +175,12 @@ function BuyNow() {
             <p className="text-[18px] font-bold">
               {!!giam_gia ? (
                 <>
-                  {(gia_ban - (gia_ban * giam_gia) / 100).toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    gia_ban - (gia_ban * giam_gia) / 100,
+                  )}
                 </>
               ) : (
-                <>
-                  {gia_ban.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </>
+                <>{new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(gia_ban)}</>
               )}
             </p>
           </div>
@@ -444,25 +438,19 @@ function BuyNow() {
               <>
                 <div className="flex justify-between">
                   <p>Tạm tính</p>
-                  <p>
-                    {sumPrice.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </p>
+                  <p>{new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(sumPrice)}</p>
                 </div>
                 <div className="flex justify-between">
                   <p>Phí giao hàng</p>
-                  <p>{sumPrice > 1000000 ? <>Miễn phí</> : <>30.000 VND</>}</p>
+                  <p>{sumPrice > 1000000 ? <>Miễn phí</> : <>30.000 đ</>}</p>
                 </div>
                 <hr />
                 <div className="flex justify-between">
                   <p>Tổng cộng</p>
                   <p>
-                    {(sumPrice > 1000000 ? sumPrice : sumPrice + 30000).toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      sumPrice > 1000000 ? sumPrice : sumPrice + 30000,
+                    )}
                   </p>
                 </div>
               </>

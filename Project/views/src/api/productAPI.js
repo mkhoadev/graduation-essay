@@ -6,8 +6,8 @@ const productAPI = {
     return axiosClient.post(API_URL, data);
   },
 
-  getProduct(id) {
-    const API_URL = `/api/manage/product/id=${id}`;
+  getProduct(idsp) {
+    const API_URL = `/api/manage/product/idsp=${idsp}`;
     return axiosClient.get(API_URL);
   },
 
@@ -16,9 +16,9 @@ const productAPI = {
     return axiosClient.get(API_URL);
   },
 
-  getProductList() {
+  getProductList(params) {
     const API_URL = "/api/manage/product/product_list";
-    return axiosClient.get(API_URL);
+    return axiosClient.get(API_URL, {params});
   },
 
   getId() {
@@ -34,6 +34,16 @@ const productAPI = {
   deleteProduct(id) {
     const API_URL = `/api/manage/product/delete/id=${id}`;
     return axiosClient.delete(API_URL);
+  },
+
+  getNewProduct() {
+    const API_URL = "/api/manage/new_product/list";
+    return axiosClient.get(API_URL);
+  },
+
+  getDiscountProduct() {
+    const API_URL = "/api/manage/discount_product/list";
+    return axiosClient.get(API_URL);
   },
 };
 

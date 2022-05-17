@@ -11,7 +11,7 @@ const Login = React.lazy(() => import("./pages/Login"));
 const ForgotPass = React.lazy(() => import("./pages/ForgotPass"));
 const Register = React.lazy(() => import("./pages/Register"));
 const Reviews = React.lazy(() => import("./pages/Reviews"));
-const DetailReviews = React.lazy(() => import("./pages/Reviews/DetailReview"));
+const DetailReview = React.lazy(() => import("./pages/Reviews/DetailReview"));
 const Orders = React.lazy(() => import("./pages/Orders"));
 const DetailOrder = React.lazy(() => import("./pages/Orders/DetailOrder"));
 const Cart = React.lazy(() => import("./pages/Cart"));
@@ -29,8 +29,8 @@ function Shop() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot_password" element={<ForgotPass />} />
-        <Route path="/reviews" element={<Reviews />} />
-        <Route path="/review/:idhdx" element={<DetailReviews />} />
+        {/* <Route path="/reviews" element={<Reviews />} /> */}
+        <Route path="/review/:idhdx" element={<DetailReview />} />
         <Route path="/register" element={<Register />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/order/:idhdx" element={<DetailOrder />} />

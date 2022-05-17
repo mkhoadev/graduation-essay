@@ -105,15 +105,16 @@ function Register() {
 
   return (
     <div className="absolute top-[55%] left-2/4 -translate-x-2/4 -translate-y-2/4 w-[400px] px-10 py-6 bg-[#F1F5F9] rounded-xl shadow-lg">
-      <p className="text-[35px] font-bold text-center">REGISTER</p>
+      <p className="text-[35px] font-bold text-center">ĐĂNG KÝ</p>
       <form onSubmit={handleSubmit((data) => getData(data))}>
         <FormRegister control={control} error={errors} watch={watch} />
 
-        <button className="w-full text-white font-bold mt-10 py-2 bg-lime-600 rounded-xl">Register</button>
+        <button className="w-full text-white font-bold mt-10 py-2 bg-lime-600 rounded-xl">ĐĂNG KÝ</button>
         <p className="text-center mt-4">
-          Already have an account ?
+          Đã có tài khoản?
           <Link className="text-sky-500" to="/shop/login">
-            Signin
+            {" "}
+            Đăng nhập
           </Link>
         </p>
       </form>
@@ -123,6 +124,7 @@ function Register() {
             onChange={(data) => verify(data)}
             className="py-2 px-4 text-[20px] text-center w-full border border-slate-900 rounded-lg"
             type="text"
+            placeholder="Nhập mã xác thực"
           />
         </Box>
       </Modal>

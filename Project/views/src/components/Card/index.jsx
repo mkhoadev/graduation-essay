@@ -4,7 +4,6 @@ import imageAPI from "../../api/imageAPI";
 import {useSnackbar} from "notistack";
 
 function Card({data}) {
-
   const [urlImage, setUrlImage] = useState([]);
 
   const {enqueueSnackbar} = useSnackbar();
@@ -50,27 +49,20 @@ function Card({data}) {
             {!!data?.gia_km ? (
               <>
                 <p className="text-red-600  text-[18px] text-center font-bold">
-                  {(data?.gia_ban_sp - (data?.gia_ban_sp * data?.gia_km) / 100).toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    data?.gia_ban_sp - (data?.gia_ban_sp * data?.gia_km) / 100,
+                  )}
                 </p>
                 <div className="h-[25px] mb-2">
                   <p className="text-slate-700 text-center line-through">
-                    {data?.gia_ban_sp.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(data?.gia_ban_sp)}
                   </p>
                 </div>
               </>
             ) : (
               <>
                 <p className="text-red-600 mb-2 text-[18px] text-center font-bold">
-                  {data.gia_ban_sp.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(data.gia_ban_sp)}
                 </p>
                 <div className="h-[25px]"></div>
               </>

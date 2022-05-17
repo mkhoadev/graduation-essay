@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import "./style.css";
 import "./zoomImage.js";
+import moment from "moment";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
 import Footer from "../../../components/Footer";
@@ -14,6 +15,7 @@ import imageAPI from "../../../api/imageAPI";
 import colorAPI from "../../../api/colorAPI";
 import reviewAPI from "../../../api/reviewsAPI";
 import detailProductAPI from "../../../api/detailProductAPI";
+import imageReviewAPI from "../../../api/imageReviewAPI";
 
 function InfoProduct() {
   const isLogin = useSelector((state) => state.user.current?.datatUser?.length);
@@ -31,6 +33,7 @@ function InfoProduct() {
   const [review, setReview] = useState([]);
   const [listSize, setListSize] = useState([]);
   const [numberProduct, setNumberProduct] = useState([]);
+  const [imageReview, setImagereview] = useState([]);
 
   const [slColor, setSlColor] = useState("");
   const [slSize, setSlSize] = useState("");
@@ -41,6 +44,8 @@ function InfoProduct() {
       const resImage = await imageAPI.getImage(params.SP);
       const resColor = await colorAPI.getColor(params.SP);
       const resReview = await reviewAPI.getReviewProduct(params.SP);
+      const resImageReview = await imageReviewAPI.getImage(resReview[0]?.id_dg);
+      setImagereview(resImageReview);
       setReview(resReview);
       setColor(resColor);
       setImage(resImage);
@@ -159,6 +164,18 @@ function InfoProduct() {
     e.target.classList.add("active__size");
   };
 
+  const renderImageRV =
+    imageReview &&
+    imageReview?.map(({hinh_anh_dg}, idx) => (
+      <div key={idx}>
+        <img
+          className="w-[100px] h-[100px] rounded-lg"
+          src={hinh_anh_dg.slice(12, hinh_anh_dg.length)}
+          alt="hinh anh san pham"
+        />
+      </div>
+    ));
+
   return (
     <>
       <div className="flex gap-10 mt-[50px] w-[75%] mx-auto">
@@ -202,29 +219,21 @@ function InfoProduct() {
               <>
                 {
                   <span className="text-2xl font-bold text-red-800">
-                    {product[0]?.gia_ban_sp.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                      product[0]?.gia_ban_sp,
+                    )}
                   </span>
                 }
               </>
             ) : (
               <>
                 <span className="text-2xl font-bold text-red-800">
-                  {(product[0]?.gia_ban_sp - (product[0]?.gia_ban_sp * product[0]?.gia_km) / 100).toLocaleString(
-                    "it-IT",
-                    {
-                      style: "currency",
-                      currency: "VND",
-                    },
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    product[0]?.gia_ban_sp - (product[0]?.gia_ban_sp * product[0]?.gia_km) / 100,
                   )}
                 </span>
                 <span className="ml-4 text-1xl text-slate-500 line-through">
-                  {product[0]?.gia_ban_sp.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(product[0]?.gia_ban_sp)}
                 </span>
               </>
             )}
@@ -279,14 +288,24 @@ function InfoProduct() {
           </div>
         </div>
       </div>
+      <hr className="w-[75%] mx-auto mt-5" />
       <div className="flex gap-10 mt-[50px] w-[75%] mx-auto">
-        <div className="w-1/2">1</div>
         <div className="w-1/2">
-          <p className="text-[25px] text-center">Đánh Giá</p>
-          {review?.map(({so_sao, noi_dung_dg}, idx) => (
-            <div className="mt-4 p-2 bg-sky-100 rounded-lg" key={idx}>
-              <Rating name="simple-controlled" size="large" value={so_sao} readOnly />
-              <p className="ml-2 text-slate-500">{noi_dung_dg}</p>
+          <p className="text-[22px] text-center font-medium">Mô tả sản phẩm</p>
+          <p>{product[0]?.thong_tin_sp}</p>
+        </div>
+        <div className="w-1/2">
+          <p className="text-[22px] text-center font-medium">Đánh Giá</p>
+          {review?.map(({so_sao, noi_dung_dg, ngay_dg}, idx) => (
+            <div className="mt-4 py-2 px-4 bg-slate-50 rounded-lg border" key={idx}>
+              <div className="flex justify-between">
+                <p className="text-slate-500">
+                  <i>{moment(ngay_dg).format("DD-MM-YYYY")}</i>
+                </p>
+                <Rating name="my-2 simple-controlled" size="large" value={so_sao} readOnly />
+              </div>
+              <div className="flex gap-5 my-2">{renderImageRV}</div>
+              <p className="my-2 text-slate-700">Đánh giá: {noi_dung_dg}</p>
             </div>
           ))}
         </div>

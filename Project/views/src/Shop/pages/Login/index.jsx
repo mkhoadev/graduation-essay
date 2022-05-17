@@ -64,7 +64,6 @@ function Login() {
           autoHideDuration: 2000,
         });
       }
-     
     } catch (error) {
       enqueueSnackbar(error.message, {
         variant: "error",
@@ -76,19 +75,20 @@ function Login() {
   return (
     <div>
       <div className="absolute top-[55%] left-2/4 -translate-x-2/4 -translate-y-2/4 w-[400px] p-10 bg-[#F1F5F9] rounded-xl shadow-lg">
-        <p className="text-[35px] font-bold text-center">LOGIN</p>
+        <p className="text-[35px] font-bold text-center">ĐĂNG NHẬP</p>
         <form onSubmit={handleSubmit((data) => setData(data))}>
           <FormLogin control={control} errors={errors} />
           <Link to="/shop/forgot_password">
-            <p className="mt-6 text-[14px] text-cyan-500 text-right cursor-pointer">Forgot password ?</p>{" "}
+            <p className="mt-6 text-[14px] text-cyan-500 text-right cursor-pointer">Quên mật khẩu ?</p>{" "}
           </Link>
           <button className="w-full opacity-80 text-white font-bold mt-8 py-2 bg-lime-600 rounded-xl hover:opacity-100 duration-300">
-            Login
+            ĐĂNG NHẬP
           </button>
           <p className="text-center mt-4">
-            Not a member ?
+            Chưa có tài khoản?
             <Link className="text-sky-500" to="/shop/register">
-              Signup
+              {" "}
+              Đăng ký
             </Link>
           </p>
         </form>

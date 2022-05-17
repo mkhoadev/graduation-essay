@@ -172,7 +172,7 @@ function DetailOrder() {
   }, []);
 
   return (
-    <div className="w-[80%] mx-auto mt-8">
+    <div className="w-[80%] mx-auto my-8">
       <Link to={"/shop/orders"}>
         <p className="py-1 px-2 w-[80px] text-white text-center font-medium rounded-md bg-neutral-500">Trở về</p>
       </Link>
@@ -193,21 +193,21 @@ function DetailOrder() {
           <p>{exportInvoice[0]?.trang_thai}</p>
         </div>
         <div>
-          {detailExportInvoice?.map(({ten_sp, hinh_anh, so_luong_xuat, mau_sac, kich_thuoc}, idx) => (
+          {detailExportInvoice?.map(({ten_sp, hinh_anh, so_luong_xuat, ten_ms, ten_kt}, idx) => (
             <div key={idx} className="relative flex justify-between gap-5 items-center mb-4 mt-4">
               <img className="block w-[10%] align-middle rounded-lg" src={hinh_anh} alt="" />
               <span className="w-[70%] text-[20px] font-bold">{ten_sp}</span>
               <span className="w-[20%] text-right">Số lượng: {so_luong_xuat}</span>
               <div className="absolute flex gap-5 left-[12.5%] top-[75%] text-slate-500 text-[14px]">
-                <p>Màu sắc: {mau_sac}</p>
-                <p>Kích thước: {kich_thuoc}</p>
+                <p>Màu sắc: {ten_ms}</p>
+                <p>Kích thước: {ten_kt}</p>
               </div>
             </div>
           ))}
         </div>
         <hr className="mt-5" />
         <div className="flex justify-between mt-5">
-          <div className="w-[55%] p-4 bg-slate-200 rounded-md">
+          <div className="w-[55%] p-4 bg-slate-100 rounded-md">
             <p className="text-[20px] font-medium">Địa chỉ</p>
             <div>
               <p>Tên khách hàng: {exportInvoice[0]?.ten_kh}</p>
@@ -221,29 +221,26 @@ function DetailOrder() {
               <div className="flex justify-between">
                 <p>Tổng tiền:</p>
                 <p>
-                  {(exportInvoice[0]?.tong_tien_hdx - exportInvoice[0]?.tien_vc).toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    exportInvoice[0]?.tong_tien_hdx - exportInvoice[0]?.tien_vc,
+                  )}
                 </p>
               </div>
               <div className="flex justify-between">
                 <p>Phí vận chuyển:</p>
                 <p>
-                  {exportInvoice[0]?.tien_vc.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    exportInvoice[0]?.tien_vc,
+                  )}
                 </p>
               </div>
               <hr className="mt-4" />
               <div className="flex justify-between">
                 <p>Tổng cộng:</p>
                 <p className="text-[20px] font-medium">
-                  {exportInvoice[0]?.tong_tien_hdx.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(
+                    exportInvoice[0]?.tong_tien_hdx,
+                  )}
                 </p>
               </div>
             </div>

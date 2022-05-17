@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import sha256 from "js-sha256";
 import {useSnackbar} from "notistack";
 
-import {useDispatch} from "react-redux";
 import verifyEmailAPI from "../../../api/verifyEmailAPI";
 import userAPI from "../../../api/userAPI";
 
@@ -25,6 +24,7 @@ function ForgotPass() {
 
   const [dataEmail, setDataEmail] = useState("");
   const [code, setCode] = useState("");
+  const [countdown, setCountDown] = useState(0);
 
   let navigate = useNavigate();
   const {enqueueSnackbar} = useSnackbar();
@@ -55,6 +55,15 @@ function ForgotPass() {
   };
 
   const sendEmail = async () => {
+    if (!dataEmail) {
+      enqueueSnackbar("Vui lòng nhập đầy đủ thông tin", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      return;
+    }
+    setCountDown(1);
+    ProgressCountdown(61);
     const checkEmail = await userAPI.checkUser(dataEmail);
     if (checkEmail.length > 0) {
       if (dataEmail) {
@@ -73,54 +82,70 @@ function ForgotPass() {
     }
   };
 
-  const email = (e) => {
-    setDataEmail(e);
+  const email = (data) => {
+    setDataEmail(data);
+  };
+
+  const ProgressCountdown = (timeleft) => {
+    return new Promise((resolve, reject) => {
+      var countdownTimer = setInterval(() => {
+        timeleft--;
+
+        document.getElementById("countdown").innerText = timeleft;
+        if (timeleft <= 0) {
+          clearInterval(countdownTimer);
+          setCountDown(0);
+          resolve(true);
+        }
+      }, 1000);
+    });
   };
 
   return (
     <div>
       <div className="absolute top-[55%] left-2/4 -translate-x-2/4 -translate-y-2/4 w-[400px] p-10 bg-[#F1F5F9] rounded-xl shadow-lg">
-        <p className="text-[25px] font-bold text-center">Forgot Password</p>
+        <p className="text-[25px] font-bold text-center">QUÊN MẬT KHẨU</p>
         <input
           onChange={(e) => email(e.target.value)}
           placeholder="Email"
           className="w-full mt-6 py-1 outline-none bg-[#F1F5F9] border-b-2 border-b-[#8A99AD]"
           type="email"
         />
-        <p
-          id="countdown"
-          onClick={() => sendEmail()}
-          className="absolute right-10 top-[108px] text-blue-800 cursor-pointer"
-        >
-          Send
-        </p>
+        {countdown === 0 ? (
+          <p onClick={() => sendEmail()} className="absolute right-10 top-[108px] text-blue-800 cursor-pointer">
+            Gửi
+          </p>
+        ) : (
+          <p id="countdown" className="absolute right-10 top-[108px] text-slate-900 cursor-pointer"></p>
+        )}
+
         <form onSubmit={handleSubmit((data) => setData(data))}>
           <input
             name="password"
             {...register("password")}
-            placeholder="Password"
+            placeholder="Mật khẩu"
             className="w-full mt-6 py-1 outline-none bg-[#F1F5F9] border-b-2 border-b-[#8A99AD]"
-            type="text"
+            type="password"
           />
 
           <input
             name="confirmpassword"
             {...register("confirmpassword")}
-            placeholder="Confirm Password"
+            placeholder="Nhập lại mật khẩu"
             className="w-full mt-6 py-1 outline-none bg-[#F1F5F9] border-b-2 border-b-[#8A99AD]"
-            type="text"
+            type="password"
           />
 
           <input
             name="capcha"
             {...register("capcha")}
-            placeholder="Capcha"
+            placeholder="Mã xác thực"
             className="w-[40%] mt-6 py-2 outline-none bg-[#F1F5F9] border-b-2 border-b-[#8A99AD]"
             type="text"
           />
 
           <button className="w-full opacity-80 text-white font-bold mt-8 py-2 bg-lime-600 rounded-xl hover:opacity-100 duration-300">
-            Change Password
+            THAY ĐỔI MẬT KHẨU
           </button>
         </form>
       </div>

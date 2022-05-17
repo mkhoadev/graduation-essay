@@ -33,7 +33,7 @@ function FormLogin({control, errors}) {
           <input
             {...field}
             type="password"
-            placeholder="Password"
+            placeholder="Mật khẩu"
             className="w-full mt-6 py-2 outline-none bg-[#F1F5F9] border-b-2 border-b-[#8A99AD]"
           />
         )}

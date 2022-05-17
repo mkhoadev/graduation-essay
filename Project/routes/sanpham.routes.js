@@ -8,13 +8,17 @@ module.exports = (app) => {
 
   app.post("/api/manage/product/add", product.createProduct);
 
-  app.get("/api/manage/product/id=:id", product.getProduct);
+  app.get("/api/manage/product/idsp=:idsp", product.getProduct);
 
   app.get("/api/manage/product/list", product.getListProducts);
 
-  app.get("/api/manage/product/product_list", product.getProductList)
+  app.get("/api/manage/product/product_list", product.getProductList);
 
   app.put("/api/manage/product/update/:id", product.updateProduct);
 
   app.delete("/api/manage/product/delete/id=:id", product.deleteProduct);
+
+  app.get("/api/manage/new_product/list", product.getNewProduct);
+
+  app.get("/api/manage/discount_product/list", product.getDiscountProduct);
 };

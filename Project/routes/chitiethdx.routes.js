@@ -13,4 +13,6 @@ module.exports = (app) => {
   app.get("/api/manage/detail_exportInvoice/sum_number", detailExportInvoice.sumNumberProduct);
 
   app.get("/api/manage/detail_exportInvoice/sum_number/idsp=:idsp", detailExportInvoice.sumNumber);
+
+  app.get("/api/manage/detail_exportInvoice/product", detailExportInvoice.getProduct);
 };

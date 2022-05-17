@@ -19,6 +19,16 @@ const reviewAPI = {
   getReviewProduct(idsp) {
     const API_URL = `/api/manage/review/idsp=${idsp}`;
     return axiosClient.get(API_URL);
+  },
+
+  getReviewInvoice(idhdx) {
+    const API_URL = `/api/manage/review/idhdx=${idhdx}`;
+    return axiosClient.get(API_URL);
+  }
+,
+  getOneReview(params) {
+    const API_URL = "/api/manage/one_review";
+    return axiosClient.get(API_URL, {params});
   }
 };
 

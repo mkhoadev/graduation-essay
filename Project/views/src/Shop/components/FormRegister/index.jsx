@@ -37,13 +37,13 @@ function FormRegister({control, error, watch}) {
             {...field}
             type="password"
             className="w-full mt-6 py-2 outline-none border-b-2 border-b-[#8A99AD] bg-[#F1F5F9]"
-            placeholder="Password"
+            placeholder="Mật khẩu"
           />
         )}
       />
       <ErrorMessage
         errors={error}
-        name="username"
+        name="password"
         render={() => (
           <p className="absolute text-[14px] text-red-600">
             Password is required
@@ -60,7 +60,7 @@ function FormRegister({control, error, watch}) {
             {...field}
             type="password"
             className="w-full mt-6 py-2 outline-none border-b-2 border-b-[#8A99AD] bg-[#F1F5F9]"
-            placeholder="Confirm Password"
+            placeholder="Nhập lại mật khẩu"
           />
         )}
       />

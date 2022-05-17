@@ -45,6 +45,11 @@ const detailProductAPI = {
     const API_URL = "/api/detail_product/add_product";
     return axiosClient.put(API_URL, data);
   },
+
+  getNumberOneProduct(params) {
+    const API_URL = "/api/detail_product/number_product";
+    return axiosClient.get(API_URL, {params});
+  }
 };
 
 export default detailProductAPI;

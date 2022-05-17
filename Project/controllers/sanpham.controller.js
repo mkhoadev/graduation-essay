@@ -38,7 +38,7 @@ module.exports = {
         message: "Content can not be empty!",
       });
     }
-    Product.getProduct(req.params.id, (err, data) => {
+    Product.getProduct(req.params.idsp, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,
@@ -63,18 +63,24 @@ module.exports = {
   },
 
   getProductList: (req, res) => {
-    if (!req.body) {
-      res.status(400).send({
-        message: "Content can not be empty!",
+    console.log(req.query);
+    if (req.query.number) {
+      Product.getAddProductList(req.query, (err, data) => {
+        if (err) {
+          res.status(500).send({
+            message: err.message,
+          });
+        } else res.status(200).send(data);
+      });
+    } else {
+      Product.getProductList((err, data) => {
+        if (err) {
+          res.status(500).send({
+            message: err.message,
+          });
+        } else res.status(200).send(data);
       });
     }
-    Product.getProductList((err, data) => {
-      if (err) {
-        res.status(500).send({
-          message: err.message,
-        });
-      } else res.status(200).send(data);
-    });
   },
 
   updateProduct: (req, res) => {
@@ -100,6 +106,26 @@ module.exports = {
 
   deleteProduct: (req, res) => {
     Product.deleteProduct(req.params.id, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  getNewProduct: (req, res) => {
+    Product.getNewProduct((err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  getDiscountProduct: (req, res) => {
+    Product.getDiscountProduct((err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

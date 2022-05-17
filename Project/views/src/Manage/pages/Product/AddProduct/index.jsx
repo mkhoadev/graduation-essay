@@ -105,12 +105,14 @@ function AddProduct() {
 
       const formData = new FormData();
       if (listImage) {
+        console.log("1")
         for (let i = 0; i < listImage.length; i++) {
           formData.append("photos", listImage[i]);
         }
-
+        console.log("2")
         formData.append("idsp", idsp[0]?.id_sp);
         await imageAPI.createImage(formData);
+        console.log("3")
       }
     } catch (error) {
       console.log(error);
@@ -141,13 +143,9 @@ function AddProduct() {
     e.preventDefault();
     const fieldName = e.target.getAttribute("name");
     const fieldValue = e.target.value;
-
     const newFormData = {...addFormData};
 
     newFormData[fieldName] = fieldValue;
-
-    console.log(newFormData);
-
     setAddFormData(newFormData);
   };
 

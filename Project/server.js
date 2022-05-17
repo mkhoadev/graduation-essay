@@ -10,11 +10,11 @@ const app = express();
 //   },
 // });
 
-const corsOptions ={
-  origin:'*', 
-  credentials:true,            //access-control-allow-credentials:true
-  optionSuccessStatus:200
-}
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
@@ -43,6 +43,7 @@ require("./routes/boloc.routes")(app);
 require("./routes/danhgia.routes")(app);
 require("./routes/chitietsanpham.routes")(app);
 require("./routes/giaohang.routes")(app);
+require("./routes/hinhanhdanhgia.routes")(app);
 
 const port = 3001;
 app.listen(port, () => {

@@ -51,6 +51,21 @@ ExportInvoice.getOrders = (idkh, status, result) => {
   );
 };
 
+ExportInvoice.numberWait = (result) => {
+  mysql.query(
+    `SELECT id_hdx FROM hoa_don_xuat WHERE trang_thai='Đang xử lý'`,
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Xóa hóa đơn xuất thành công");
+      result(null, res);
+    },
+  );
+};
+
 ExportInvoice.getAll = (result) => {
   mysql.query(`SELECT * FROM hoa_don_xuat ORDER BY SUBSTRING(id_hdx,5)*1 DESC`, (err, res) => {
     if (err) {

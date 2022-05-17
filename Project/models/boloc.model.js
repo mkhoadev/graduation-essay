@@ -54,4 +54,15 @@ Filter.search = (key, result) => {
   });
 };
 
+Filter.rangePrice = (data, result) => {
+  mysql.query(`SELECT * from A WHERE gia_da_km >= ${data[0]} AND gia_da_km <=${data[1]}`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(err, null);
+      return;
+    }
+    result(null, res);
+  });
+};
+
 module.exports = Filter;

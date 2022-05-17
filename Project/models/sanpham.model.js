@@ -20,9 +20,9 @@ Product.createProduct = (newProduct, result) => {
   });
 };
 
-Product.getProduct = (id, result) => {
+Product.getProduct = (idsp, result) => {
   mysql.query(
-    `SELECT san_pham.*, khuyen_mai.gia_km FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp WHERE san_pham.id_sp = '${id}' ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC`,
+    `SELECT san_pham.*, khuyen_mai.gia_km FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp WHERE san_pham.id_sp = '${idsp}' ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC`,
     (err, res) => {
       if (err) {
         console.log("ERROR: ", err);
@@ -52,7 +52,22 @@ Product.getListProducts = (result) => {
 
 Product.getProductList = (result) => {
   mysql.query(
-    "SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC",
+    "SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC LIMIT 8",
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Get products");
+      result(null, res);
+    },
+  );
+};
+
+Product.getAddProductList = (data, result) => {
+  mysql.query(
+    `SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 ASC LIMIT ${data.number}`,
     (err, res) => {
       if (err) {
         console.log("ERROR: ", err);
@@ -121,6 +136,36 @@ Product.deleteProduct = (id, result) => {
     console.log("Delete product");
     result(null, res);
   });
+};
+
+Product.getNewProduct = (result) => {
+  mysql.query(
+    "SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp ORDER BY SUBSTRING(san_pham.id_sp,4)*1 DESC LIMIT 8",
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Delete product");
+      result(null, res);
+    },
+  );
+};
+
+Product.getDiscountProduct = (result) => {
+  mysql.query(
+    "SELECT san_pham.*, khuyen_mai.gia_km  FROM san_pham LEFT JOIN khuyen_mai ON san_pham.id_sp = khuyen_mai.id_sp WHERE khuyen_mai.gia_km != '' ORDER BY SUBSTRING(san_pham.id_sp,4)*1 DESC LIMIT 8",
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("Delete product");
+      result(null, res);
+    },
+  );
 };
 
 module.exports = Product;

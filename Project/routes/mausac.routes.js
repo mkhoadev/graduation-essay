@@ -10,7 +10,7 @@ module.exports = (app) => {
 
   app.get("/api/color/id=:id", color.getColor);
 
-  app.get("/api/color/idms=:idms", color.getOneColor)
+  app.get("/api/color/idms=:idms", color.getOneColor);
 
   app.get("/api/color/list", color.getListColor);
 

@@ -19,13 +19,9 @@ module.exports = (app) => {
     next();
   });
 
-  app.post(
-    "/api/manage/photos/upload",
-    upload.array("photos"),
-    image.createImage
-  );
+  app.post("/api/manage/photos/upload", upload.array("photos"), image.createImage);
 
-  app.get("/api/manage/photos/id=:id", image.getImage)
+  app.get("/api/manage/photos/id=:id", image.getImage);
 
   app.delete("/api/manage/photos/delete=:id", image.deleteImage);
 };
