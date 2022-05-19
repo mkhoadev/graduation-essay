@@ -175,7 +175,7 @@ function ImportInvoice() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <p className="text-[26px] text-center font-medium">Nhập hóa đơn</p>
+            <p className="text-[26px] text-center font-medium">NHẬP SẢN PHẨM</p>
             <form onSubmit={handleSubmit}>
               <div className="flex gap-5">
                 <div className="w-1/2">

@@ -105,14 +105,14 @@ function AddProduct() {
 
       const formData = new FormData();
       if (listImage) {
-        console.log("1")
+        console.log("1");
         for (let i = 0; i < listImage.length; i++) {
           formData.append("photos", listImage[i]);
         }
-        console.log("2")
+        console.log("2");
         formData.append("idsp", idsp[0]?.id_sp);
         await imageAPI.createImage(formData);
-        console.log("3")
+        console.log("3");
       }
     } catch (error) {
       console.log(error);
@@ -165,7 +165,7 @@ function AddProduct() {
   return (
     <div>
       <form id="addProduct" onSubmit={handleSubmit((data) => setData(data))}>
-        <button className="ml-7 px-10 py-2 mb-5 text-white bg-slate-400 rounded shadow-lg">Add</button>
+        <button className="ml-7 px-10 py-2 mb-5 text-white bg-slate-400 rounded shadow-lg">Thêm</button>
         <div className="px-7">
           <div className="mt-5">
             <span>Tên sản phẩm </span>
@@ -203,7 +203,7 @@ function AddProduct() {
           </div>
 
           <div className="flex gap-5">
-            <div>
+            <div className="w-[30%]">
               <div className="mt-5">
                 <span className="block">Loại sản phẩm</span>
                 <select
@@ -235,14 +235,6 @@ function AddProduct() {
                     ))}
                 </select>
               </div>
-              {/* <div className="mt-5">
-                <span className="block">Giá nhập</span>
-                <input
-                  name="gianhap"
-                  {...register("gianhap")}
-                  className="p-1 w-[200px] border border-slate-400 rounded-lg"
-                />
-              </div> */}
               <div className="mt-5">
                 <span className="block">Giá bán</span>
                 <input
@@ -252,17 +244,17 @@ function AddProduct() {
                 />
               </div>
             </div>
-          </div>
 
-          <div className="mt-5">
-            <span>Thông tin sản phẩm</span> <br />
-            <textarea
-              className="w-full p-2 border border-slate-400 rounded-lg"
-              name="thongtinsanpham"
-              id=""
-              rows="10"
-              {...register("thongtinsanpham")}
-            ></textarea>
+            <div className="w-[70%] mt-5">
+              <span>Thông tin sản phẩm</span> <br />
+              <textarea
+                className="w-full p-2 border border-slate-400 rounded-lg"
+                name="thongtinsanpham"
+                id=""
+                rows="10"
+                {...register("thongtinsanpham")}
+              ></textarea>
+            </div>
           </div>
         </div>
       </form>
@@ -300,7 +292,7 @@ function AddProduct() {
             </select>
           </div>
 
-          <button className="px-4 bg-slate-400 rounded-lg">ADD</button>
+          <button className="px-4 bg-slate-400 text-white rounded-lg">Thêm</button>
         </div>
       </form>
 
