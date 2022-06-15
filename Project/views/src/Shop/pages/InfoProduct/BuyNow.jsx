@@ -238,6 +238,7 @@ function BuyNow() {
         });
         setCount((e) => e + 1);
         handleCloseFormAddress();
+        handleSettingAddress();
       } else {
         enqueueSnackbar("Vui lòng nhập đầy đủ thông tin", {
           variant: "error",

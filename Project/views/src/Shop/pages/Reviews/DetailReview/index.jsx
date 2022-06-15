@@ -169,6 +169,7 @@ function DetailReview() {
         formData.append("iddg", id_dg[0]?.id_dg);
         await imageReviewAPI.createImageRV(formData);
       }
+      handleClose();
     }
   };
 

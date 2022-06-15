@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import {AiOutlineBarChart, AiOutlineAppstoreAdd} from "react-icons/ai";
 import {BsBoxSeam, BsPeople} from "react-icons/bs";
 import {TiThMenuOutline} from "react-icons/ti";
-import {RiBillLine} from "react-icons/ri";
+import { RiBillLine } from "react-icons/ri";
+import {MdOutlineReviews} from "react-icons/md"
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import exportInvoiceAPI from "../../../api/exportInvoiceAPI";
@@ -129,6 +130,24 @@ function Navigation() {
               <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
                 <BsPeople size={30} />
                 <p className="text-[16px]">Nhân viên</p>
+              </div>
+            </Link>
+          )}
+
+          {role === "CV01" && (
+            <Link to="/manage/customer">
+              <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
+                <BsPeople size={30} />
+                <p className="text-[16px]">Khách hàng</p>
+              </div>
+            </Link>
+          )}
+
+          {role === "CV01" && (
+            <Link to="/manage/reviews">
+              <div className="flex gap-2 items-center px-6 py-3 border-l-4 hover:bg-white hover:border-[#000] cursor-pointer duration-300">
+                <MdOutlineReviews size={30} />
+                <p className="text-[16px]">Đánh giá</p>
               </div>
             </Link>
           )}

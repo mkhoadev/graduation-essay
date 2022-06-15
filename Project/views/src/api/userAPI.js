@@ -16,10 +16,6 @@ const userAPI = {
     return axiosClient.get(API_URL);
   },
 
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem("user"));
-  },
-
   changePass(email, password) {
     const API_URL = `/api/change_password/email=${email}`;
     return axiosClient.put(API_URL, password);
@@ -28,6 +24,16 @@ const userAPI = {
   getOneUser(id_kh) {
     const API_URL = `/api/get_user/id_kh=${id_kh}`;
     return axiosClient.get(API_URL);
+  },
+
+  getListClient() {
+    const API_URL = "/api/get_user/list";
+    return axiosClient.get(API_URL);
+  },
+
+  updateStatusUser(idkh, status) {
+    const API_URL = `/api/update_user/status=${status}/idkh=${idkh}`;
+    return axiosClient.put(API_URL);
   },
 };
 

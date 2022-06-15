@@ -44,14 +44,17 @@ Filter.sortSize = (key, result) => {
 };
 
 Filter.search = (key, result) => {
-  mysql.query(`SELECT * FROM san_pham WHERE ten_sp LIKE '%${key}%' ORDER BY SUBSTRING(id_sp,4)*1 ASC`, (err, res) => {
-    if (err) {
-      console.log("ERROR: ", err);
-      result(err, null);
-      return;
-    }
-    result(null, res);
-  });
+  mysql.query(
+    `SELECT * FROM san_pham WHERE ten_sp LIKE '%${key}%' ORDER BY SUBSTRING(id_sp,4)*1 ASC LIMIT 5`,
+    (err, res) => {
+      if (err) {
+        console.log("ERROR: ", err);
+        result(err, null);
+        return;
+      }
+      result(null, res);
+    },
+  );
 };
 
 Filter.rangePrice = (data, result) => {

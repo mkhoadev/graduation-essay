@@ -16,21 +16,27 @@ import {removeAllAddress} from "../../redux/addressSlice";
 import {removeAllCart} from "../../redux/cartSlide";
 import filterAPI from "../../api/filterAPI";
 import {useForm} from "react-hook-form";
-import {addListProduct, product} from "../../redux/productSlice";
+import {product} from "../../redux/productSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
+import CardItem from "../CardItem";
+
+const defaulValue = {
+  search: "",
+};
 
 function Header() {
   const isLogin = useSelector((state) => state.user.current.datatUser?.length);
   const numerProduct = useSelector((state) => state?.cart?.cartItem);
 
   const [soluong, setSoluong] = useState(0);
+  const [searchData, setSearchData] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {enqueueSnackbar} = useSnackbar();
 
-  const {register, handleSubmit} = useForm();
+  const {register, handleSubmit} = useForm(defaulValue);
 
   const logoutUser = () => {
     dispatch(removeAllCart());
@@ -59,12 +65,16 @@ function Header() {
           autoHideDuration: 2000,
         });
       }
+      const a = document.querySelector(".boxSearch");
+      a.style = "display: none";
     })();
   }, [numerProduct]);
 
   const search = async (data) => {
     const dataSearch = await filterAPI.search(data.search);
-    dispatch(addListProduct(dataSearch));
+    setSearchData(dataSearch);
+    const a = document.querySelector(".boxSearch");
+    a.style = "display: block";
   };
 
   const startvoice = () => {
@@ -80,6 +90,11 @@ function Header() {
         console.log("Vui long thuc hien lai");
       }
     };
+  };
+
+  window.onclick = () => {
+    const a = document.querySelector(".boxSearch");
+    a.style = "display: none";
   };
 
   return (
@@ -105,7 +120,7 @@ function Header() {
           </div>
         </div>
 
-        <div>
+        <div className="relative">
           <form onSubmit={handleSubmit((data) => search(data))}>
             <div className="relative flex flex-1">
               <input
@@ -126,6 +141,17 @@ function Header() {
               </button>
             </div>
           </form>
+          {searchData.length > 0 ? (
+            <div className="boxSearch absolute px-3 w-[500px] bg-slate-50 rounded-md z-50 -left-1/2 border shadow-md">
+              {searchData?.map((data, idx) => (
+                <CardItem key={idx} data={data} />
+              ))}
+            </div>
+          ) : (
+            <div className="boxSearch absolute p-4 w-[350px] bg-slate-50 rounded-md z-50 border shadow-md">
+              <p> Không có sản phẩm bạn đang tìm</p>
+            </div>
+          )}
         </div>
 
         {!!!isLogin ? (
@@ -159,9 +185,9 @@ function Header() {
                 <Link to="/shop/orders">
                   <p className=" hover:bg-slate-100 py-2 px-4 text-[16px] text-center rounded-t-md">Đơn hàng</p>
                 </Link>
-                <Link to="/shop/reviews">
+                {/* <Link to="/shop/reviews">
                   <p className="hover:bg-slate-100 py-2 px-4 text-[16px] text-center">Đánh giá</p>
-                </Link>
+                </Link> */}
                 <p onClick={logoutUser} className="hover:bg-slate-100 py-2 px-4 text-[16px] text-center rounded-b-md">
                   Đăng xuất
                 </p>

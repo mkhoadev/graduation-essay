@@ -29,7 +29,6 @@ function Shop() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot_password" element={<ForgotPass />} />
-        {/* <Route path="/reviews" element={<Reviews />} /> */}
         <Route path="/review/:idhdx" element={<DetailReview />} />
         <Route path="/register" element={<Register />} />
         <Route path="/orders" element={<Orders />} />

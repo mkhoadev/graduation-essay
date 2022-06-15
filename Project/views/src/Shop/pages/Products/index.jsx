@@ -58,8 +58,6 @@ function Products() {
     dispatch(addListProduct(res));
   };
 
-  console.log(count);
-
   return (
     <div>
       <div className="flex gap-5 w-[80%] mx-auto mt-10">

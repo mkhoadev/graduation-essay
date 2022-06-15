@@ -70,8 +70,32 @@ module.exports = {
     });
   },
 
+  getListClient: (req, res) => {
+    User.getListClient((err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  },
+
   changePassword: (req, res) => {
     User.changePassword(req.params.email, req.body.password, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  },
+
+  updateStatusUser: (req, res) => {
+    User.updateStatusUser(req.params.idkh, req.params.status, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,

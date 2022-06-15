@@ -56,6 +56,19 @@ User.getOneUser = (id_kh, result) => {
   });
 };
 
+User.getListClient = (result) => {
+  mysql.query(`SELECT * FROM khach_hang`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    } else {
+      console.log("check eamil user success");
+      result(null, res);
+    }
+  });
+};
+
 User.changePassword = (email, password, result) => {
   mysql.query(`UPDATE khach_hang SET mat_khau_kh='${password}' WHERE email_kh='${email}'`, (err, res) => {
     if (err) {
@@ -64,6 +77,19 @@ User.changePassword = (email, password, result) => {
       return;
     } else {
       console.log("change password user success");
+      result(null, res);
+    }
+  });
+};
+
+User.updateStatusUser = (idkh, status, result) => {
+  mysql.query(`UPDATE khach_hang SET trang_thai_kh='${status}' WHERE id_kh='${idkh}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(null, err);
+      return;
+    } else {
+      console.log("Success");
       result(null, res);
     }
   });

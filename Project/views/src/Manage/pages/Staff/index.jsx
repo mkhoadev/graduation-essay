@@ -120,14 +120,14 @@ function Staff() {
       width: 250,
       renderCell: (params) => (
         <div className="flex justify-between w-full">
-          <div>
+          {/* <div>
             <button
               onClick={() => viewStaff(params.row.id_nv)}
               className="py-2 px-4 text-white font-bold bg-[#00CED1] rounded-lg shadow-lg"
             >
               Xem
             </button>
-          </div>
+          </div> */}
           <div>
             <button
               onClick={() => editStaff(params.row.id_nv)}
@@ -331,8 +331,8 @@ function Staff() {
       </div>
 
       <div className="mt-5">
-        <div style={{height: 400, width: "100%"}}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} />
+        <div style={{height: 600, width: "100%"}}>
+          <DataGrid rows={rows} columns={columns} pageSize={8} rowsPerPageOptions={[8]} />
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"

@@ -70,7 +70,7 @@ Employee.getEmployee = (idnv, result) => {
 };
 
 Employee.getListEmployee = (result) => {
-  mysql.query("SELECT * FROM nhan_vien INNER JOIN chuc_vu ON nhan_vien.id_cv = chuc_vu.id_cv", (err, res) => {
+  mysql.query("SELECT * FROM nhan_vien INNER JOIN chuc_vu ON nhan_vien.id_cv = chuc_vu.id_cv ORDER BY SUBSTRING(id_nv,4)*1 ASC", (err, res) => {
     if (err) {
       console.log("ERROR: ", err);
       result(null, err);

@@ -4,6 +4,8 @@ import NotFound from "../components/NotFound";
 import Menu from "./components/Menu";
 import Navigation from "./components/Navigation";
 import Category from "./pages/Category";
+import Customer from "./pages/Customer";
+import Reviews from "./pages/Reviews";
 
 const LoginManage = React.lazy(() => import("./pages/LoginManage"));
 const Staff = React.lazy(() => import("./pages/Staff"));
@@ -34,6 +36,8 @@ function Manage() {
             <Route path="/bill/*" element={<Bill />} />
             <Route path="/delivery" element={<Delivery />} />
             <Route path="/staff" element={<Staff />} />
+            <Route path="/customer" element={<Customer />} />
+            <Route path="/reviews" element={<Reviews />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>

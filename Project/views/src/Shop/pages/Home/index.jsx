@@ -4,7 +4,6 @@ import productAPI from "../../../api/productAPI";
 import Banner from "../../../components/Banner";
 import Card from "../../../components/Card";
 import Footer from "../../../components/Footer";
-import "../../components/Chat";
 
 function Home() {
   const dataProduct = useSelector((state) => state?.product?.productlist);

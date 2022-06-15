@@ -65,7 +65,7 @@ function Dashboard() {
       setTurnover(datas);
 
       const res_productsInStock = await detailProductAPI.getAllNumber();
-      setProductsInStock(res_productsInStock[0]?.so_luong_sp)
+      setProductsInStock(res_productsInStock[0]?.so_luong_sp);
     })();
   }, []);
 
@@ -140,7 +140,7 @@ function Dashboard() {
   };
 
   const data_doughnut = {
-    labels: ["Đơn đã bán", "Đơn hoàn"],
+    labels: ["Đơn thành công", "Đơn hoàn"],
     datasets: [
       {
         label: "Số lượng",

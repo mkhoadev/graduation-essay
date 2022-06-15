@@ -243,7 +243,7 @@ function ListProducts() {
             </button>
           </div>
 
-          <div>
+          {/* <div>
             <button
               onClick={() => addProduct(params.row.id_sp, params.row.id_hdn)}
               className="py-2 px-4 text-white font-bold bg-[#630e9f] rounded-lg shadow-lg"
@@ -306,7 +306,7 @@ function ListProducts() {
                 </div>
               </Box>
             </Modal>
-          </div>
+          </div> */}
 
           <div>
             <button

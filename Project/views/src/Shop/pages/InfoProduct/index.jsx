@@ -2,11 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import "./style.css";
 import "./zoomImage.js";
-import moment from "moment";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
 import Footer from "../../../components/Footer";
-import {Rating} from "@mui/material";
 import {addtoCart} from "../../../redux/cartSlide";
 import {addtoListBuy} from "../../../redux/listbuySlice";
 
@@ -16,6 +14,7 @@ import colorAPI from "../../../api/colorAPI";
 import reviewAPI from "../../../api/reviewsAPI";
 import detailProductAPI from "../../../api/detailProductAPI";
 import imageReviewAPI from "../../../api/imageReviewAPI";
+import ReviewsProduct from "./Reviews";
 
 function InfoProduct() {
   const isLogin = useSelector((state) => state.user.current?.datatUser?.length);
@@ -34,9 +33,10 @@ function InfoProduct() {
   const [listSize, setListSize] = useState([]);
   const [numberProduct, setNumberProduct] = useState([]);
   const [imageReview, setImagereview] = useState([]);
-
   const [slColor, setSlColor] = useState("");
   const [slSize, setSlSize] = useState("");
+
+  const cartList = useSelector((state) => state.cart?.cartItem);
 
   useEffect(() => {
     (async () => {
@@ -44,6 +44,7 @@ function InfoProduct() {
       const resImage = await imageAPI.getImage(params.SP);
       const resColor = await colorAPI.getColor(params.SP);
       const resReview = await reviewAPI.getReviewProduct(params.SP);
+      console.log(resReview);
       const resImageReview = await imageReviewAPI.getImage(resReview[0]?.id_dg);
       setImagereview(resImageReview);
       setReview(resReview);
@@ -51,7 +52,7 @@ function InfoProduct() {
       setImage(resImage);
       setProduct(resProduct);
     })();
-  }, [params]);
+  }, [params, cartList]);
 
   const soluong = 1;
   const addCart = (idsp) => {
@@ -62,14 +63,14 @@ function InfoProduct() {
           addtoCart({
             id_sp: idsp,
             ten_sp: product[0]?.ten_sp,
-            id_ms: slSize[0].id_ms,
-            id_kt: slSize[0].id_kt,
-            ten_ms: slSize[0].ten_ms,
-            ten_kt: slSize[0].ten_kt,
+            id_ms: slSize[0]?.id_ms,
+            id_kt: slSize[0]?.id_kt,
+            ten_ms: slSize[0]?.ten_ms,
+            ten_kt: slSize[0]?.ten_kt,
             so_luong_xuat: JSON.parse(soluong),
             gia_ban: product[0]?.gia_ban_sp,
             hinh_anh: image[0]?.hinh_anh_sp.slice(12, image[0]?.hinh_anh_sp.length),
-            giam_gia: product[0]?.gia_km ? product[0].gia_km : 0,
+            giam_gia: product[0]?.gia_km ? product[0]?.gia_km : 0,
             type: "cart",
           }),
         );
@@ -294,18 +295,19 @@ function InfoProduct() {
           <p className="text-[22px] text-center font-medium">Mô tả sản phẩm</p>
           <p>{product[0]?.thong_tin_sp}</p>
         </div>
+
         <div className="w-1/2">
           <p className="text-[22px] text-center font-medium">Đánh Giá</p>
-          {review?.map(({so_sao, noi_dung_dg, ngay_dg}, idx) => (
-            <div className="mt-4 py-2 px-4 bg-slate-50 rounded-lg border" key={idx}>
-              <div className="flex justify-between">
-                <p className="text-slate-500">
-                  <i>{moment(ngay_dg).format("DD-MM-YYYY")}</i>
-                </p>
-                <Rating name="my-2 simple-controlled" size="large" value={so_sao} readOnly />
-              </div>
-              <div className="flex gap-5 my-2">{renderImageRV}</div>
-              <p className="my-2 text-slate-700">Đánh giá: {noi_dung_dg}</p>
+          {review?.map(({so_sao, noi_dung_dg, ngay_dg, id_dg, trang_thai_dg}, idx) => (
+            <div key={idx}>
+              {trang_thai_dg === 0 ? (
+                <ReviewsProduct
+                  key={idx}
+                  data={{id_dg: id_dg, so_sao: so_sao, noi_dung_dg: noi_dung_dg, ngay_dg: ngay_dg}}
+                />
+              ) : (
+                <></>
+              )}
             </div>
           ))}
         </div>

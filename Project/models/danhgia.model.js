@@ -35,7 +35,7 @@ Review.getIdReview = (result) => {
 };
 
 Review.getListReview = (result) => {
-  mysql.query("SELECT * FROM danh_gia", (err, res) => {
+  mysql.query("SELECT * FROM danh_gia INNER JOIN san_pham ON san_pham.id_sp = danh_gia.ma_sp", (err, res) => {
     if (err) {
       console.log("ERROR: ", err);
       result(err, null);
@@ -98,6 +98,18 @@ Review.getOneReview = (data, result) => {
       result(null, res);
     },
   );
+};
+
+Review.updateStatus = (status, iddg, result) => {
+  mysql.query(`UPDATE danh_gia SET trang_thai_dg='${status}' WHERE id_dg='${iddg}'`, (err, res) => {
+    if (err) {
+      console.log("ERROR: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("Lấy danh sách đánh giá sản phẩm thành công");
+    result(null, res);
+  });
 };
 
 module.exports = Review;

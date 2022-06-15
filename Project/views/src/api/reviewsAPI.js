@@ -24,12 +24,17 @@ const reviewAPI = {
   getReviewInvoice(idhdx) {
     const API_URL = `/api/manage/review/idhdx=${idhdx}`;
     return axiosClient.get(API_URL);
-  }
-,
+  },
+
   getOneReview(params) {
     const API_URL = "/api/manage/one_review";
     return axiosClient.get(API_URL, {params});
-  }
+  },
+
+  updateStatus(iddg, status) {
+    const API_URL = `/api/manage/update_status/status=${status}/iddg=${iddg}`;
+    return axiosClient.put(API_URL);
+  },
 };
 
 export default reviewAPI;

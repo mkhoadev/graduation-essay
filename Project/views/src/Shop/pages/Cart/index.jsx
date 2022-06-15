@@ -36,9 +36,8 @@ function Cart() {
     });
   };
 
-  const payoffline = async () => {
+  const payCart = async () => {
     try {
-      if (!id_dc[0]?.id_dc) return navigation("/shop/profile");
       dispatch(addtoListBuy(dataCart));
       navigation("/shop/order/detail_pay_order");
     } catch (error) {
@@ -159,7 +158,7 @@ function Cart() {
               <div>
                 <div>
                   <button
-                    onClick={() => payoffline()}
+                    onClick={() => payCart()}
                     className="py-3 px-4 w-full mt-8 text-white bg-slate-600 rounded-lg"
                   >
                     Thanh toán

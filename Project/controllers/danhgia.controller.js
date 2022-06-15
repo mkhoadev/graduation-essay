@@ -73,9 +73,19 @@ module.exports = {
       } else res.status(200).send(data);
     });
   },
-  
+
   getOneReview: (req, res) => {
     Review.getOneReview(req.query, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else res.status(200).send(data);
+    });
+  },
+
+  updateStatus: (req, res) => {
+    Review.updateStatus(req.params.status, req.params.iddg, (err, data) => {
       if (err) {
         res.status(500).send({
           message: err.message,
