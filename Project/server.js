@@ -1,14 +1,7 @@
-// const {v4: uuidv4} = require("uuid");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
-// const httpServer = require("http").createServer();
-// const io = require("socket.io")(httpServer, {
-//   cors: {
-//     origin: "*",
-//   },
-// });
 
 const corsOptions = {
   origin: "*",
@@ -50,33 +43,3 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-// ====================== Socket =======================
-// let users = [];
-// io.on("connection", (socket) => {
-//   socket.on("user_connected", (username) => {
-//     users.push({
-//       id: socket.id,
-//       username: username,
-//     });
-//     io.emit("user_connected", username);
-
-//     io.emit("users", users);
-//   });
-
-//   var message = [];
-//   socket.on("send_message", (data) => {
-//     const userId = users.findIndex((item) => item.username === data.receiver);
-//     const socketId = users[userId].id;
-//     message.push(data);
-//     io.to(socketId).emit("new_message", message);
-//   });
-
-//   socket.on("disconnect", () => {
-//     users = users.filter((item) => item.id !== socket.id);
-//     console.log("User Disconnect", socket.id);
-//   });
-// });
-
-// io.listen(3108, () => {
-//   console.log("Server đang chay tren cong 3108");
-// });

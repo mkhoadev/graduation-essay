@@ -1,12 +1,12 @@
-import "./App.css";
-import React, {Suspense} from "react";
-import {Routes, Route, Navigate} from "react-router-dom";
-import Loading from "./Loading";
+import './App.css'
+import React, {Suspense} from 'react'
+import {Routes, Route, Navigate} from 'react-router-dom'
+import Loading from './Loading'
 
-const Shop = React.lazy(() => import("./Shop"));
-const Manage = React.lazy(() => import("./Manage"));
-const Deliver = React.lazy(() => import("./Deliver"));
-const NotFound = React.lazy(() => import("./components/NotFound"));
+const Shop = React.lazy(() => import('./Shop'))
+const Manage = React.lazy(() => import('./Manage'))
+const Deliver = React.lazy(() => import('./Deliver'))
+const NotFound = React.lazy(() => import('./components/NotFound'))
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         </Routes>
       </Suspense>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

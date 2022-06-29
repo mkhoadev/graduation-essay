@@ -1,8 +1,0 @@
-POST http://localhost:3001/api/manage/delivier/add
-Content-Type: application/json
-
-{
-  "idhdx": "HDX011",
-  "idnv": "NV06",
-  "trangthai": "Đang xử lý"
-}
